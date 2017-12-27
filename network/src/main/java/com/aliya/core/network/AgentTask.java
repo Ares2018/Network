@@ -8,6 +8,7 @@ import com.aliya.core.network.api.ApiType;
 import com.aliya.core.network.callback.ApiCallback;
 import com.aliya.core.network.callback.ApiProCallback;
 import com.aliya.core.network.callback.ApiProgressCallback;
+import com.aliya.core.network.progress.ProgressInterceptor;
 import com.aliya.core.network.utils.ParamsBuilder;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ class AgentTask<T> implements Callback {
 
         if (mCallback instanceof ApiProgressCallback) {
             call = ApiManager.getClient().newBuilder()
-//                    .addInterceptor(new ProgressInterceptor(listener))
+                    .addInterceptor(new ProgressInterceptor((ApiProgressCallback) mCallback))
                     .build().newCall(requestBuilder.build());
         } else {
             call = ApiManager.getClient().newCall(requestBuilder.build());
