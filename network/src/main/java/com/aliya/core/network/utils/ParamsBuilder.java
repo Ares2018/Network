@@ -62,9 +62,9 @@ public final class ParamsBuilder {
      * 构建 POST 请求参数
      *
      * @param paramsMap 参数Map
-     * @return 表单类型的FromBody
+     * @return RequestBody
      */
-    public static @NonNull FormBody buildPost(Map<String, Object> paramsMap) {
+    public static @NonNull RequestBody buildPost(Map<String, Object> paramsMap) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (paramsMap != null && !paramsMap.isEmpty()) {
             for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
@@ -83,9 +83,9 @@ public final class ParamsBuilder {
      *
      * @param paramsMap 参数Map
      * @param filesMap  文件Map
-     * @return 多类型的Body
+     * @return RequestBody
      */
-    public static @NonNull MultipartBody buildUpload(Map<String, Object> paramsMap,
+    public static @NonNull RequestBody buildUpload(Map<String, Object> paramsMap,
                               Map<String, String> filesMap) {
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);

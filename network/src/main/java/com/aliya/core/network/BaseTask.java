@@ -39,7 +39,7 @@ public abstract class BaseTask<T> implements ApiTask {
         return exe(mParams);
     }
 
-    public BaseTask<T> setTag(Object tag) {
+    public ApiTask setTag(Object tag) {
         mAgentTask.setTag(tag);
         return this;
     }
