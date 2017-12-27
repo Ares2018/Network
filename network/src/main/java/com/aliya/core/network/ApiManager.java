@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.aliya.core.network.cache.CacheInterceptor;
+import com.aliya.core.network.module.ParseResponse;
 import com.aliya.core.network.okhttp.SSLSocketManager;
 
 import java.io.File;
@@ -55,6 +56,17 @@ public class ApiManager {
             }
         }
         return sClient;
+    }
+
+    private static ParseResponse sParseResponse;
+
+
+    public static void setParseResponse(ParseResponse parseResponse) {
+        sParseResponse = parseResponse;
+    }
+
+    public static ParseResponse getParseResponse() {
+        return sParseResponse;
     }
 
     /**

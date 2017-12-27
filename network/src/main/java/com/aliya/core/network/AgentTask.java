@@ -6,6 +6,7 @@ import com.aliya.core.network.api.ApiCall;
 import com.aliya.core.network.api.ApiTask;
 import com.aliya.core.network.api.ApiType;
 import com.aliya.core.network.cache.CachePolicy;
+import com.aliya.core.network.callback.AgentCallback;
 import com.aliya.core.network.callback.ApiCallback;
 import com.aliya.core.network.callback.ApiProCallback;
 import com.aliya.core.network.callback.ApiProgressCallback;
@@ -31,7 +32,7 @@ import static com.aliya.core.network.utils.HandlerUtils.runInMainThread;
  * @author a_liYa
  * @date 2017/12/26 22:17.
  */
-class AgentTask<T> implements Callback {
+class AgentTask<T> implements Callback, AgentCallback<T> {
 
     private ApiCallback<T> mCallback;
 
@@ -135,7 +136,7 @@ class AgentTask<T> implements Callback {
     public void onFailure(Call call, IOException e) {
         if (mCallback != null) {
             if (call.isCanceled()) {
-//                handleCancel();
+                onCancel();
             } else {
 //                handleError(e);
             }
@@ -147,12 +148,14 @@ class AgentTask<T> implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         if (call != null && call.isCanceled()) {
-//            handleCancel();
+            onCancel();
         } else {
-
+            ApiManager.getParseResponse().onParseResponse(response, this, mApiTask.getClass());
         }
     }
 
+    // 处理成功
+    @Override
     public void onSuccess(final T result) {
         if (mCallback == null) return;
         checkExeTime();
@@ -165,6 +168,7 @@ class AgentTask<T> implements Callback {
     }
 
     // 处理取消
+    @Override
     public void onCancel() {
         if (mCallback == null) return;
         runInMainThread(new Runnable() {
@@ -175,6 +179,8 @@ class AgentTask<T> implements Callback {
         });
     }
 
+    // 处理失败
+    @Override
     public void onError(final int errCode, final String msg) {
         if (mCallback == null) return;
         checkExeTime();
