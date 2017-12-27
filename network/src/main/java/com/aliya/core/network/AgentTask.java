@@ -5,22 +5,25 @@ import android.os.SystemClock;
 import com.aliya.core.network.api.ApiCall;
 import com.aliya.core.network.api.ApiTask;
 import com.aliya.core.network.api.ApiType;
+import com.aliya.core.network.cache.CachePolicy;
 import com.aliya.core.network.callback.ApiCallback;
 import com.aliya.core.network.callback.ApiProCallback;
 import com.aliya.core.network.callback.ApiProgressCallback;
-import com.aliya.core.network.progress.ProgressInterceptor;
+import com.aliya.core.network.okhttp.ProgressInterceptor;
 import com.aliya.core.network.utils.ParamsBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.aliya.core.network.utils.HandlerUtils.runInMainThread;
 
 /**
  * 代理 Task
@@ -34,15 +37,17 @@ class AgentTask<T> implements Callback {
 
     private Map<String, Object> mParamsMap; // 普通参数Map
     private Map<String, String> mFilesMap; // 文件参数Map
-    private List<Header> mHeaders; // 请求头List
+    private Map<String, Set<String>> mHeaders; // 请求头List
 
-    private Object tag;
+    private Object mTag;
 
     private ApiType mApiType;
     private ApiTask mApiTask;
     private ApiCall mTaskCall;
 
-    private long startTime; // 开始执行的时间
+    private CachePolicy mCachePolicy;
+    private long mStartMs; // 开始的时间 单位：毫秒
+    private long mShortestMs; // 返回的最短时间 单位：毫秒
 
     public AgentTask(ApiTask apiTask, ApiCallback<T> callback, ApiType type) {
         this.mApiTask = apiTask;
@@ -51,7 +56,7 @@ class AgentTask<T> implements Callback {
     }
 
     public void setTag(Object tag) {
-        this.tag = tag;
+        this.mTag = tag;
     }
 
     public void put(String key, Object value) {
@@ -65,15 +70,28 @@ class AgentTask<T> implements Callback {
     }
 
     public void addHeader(String name, String value) {
-        if (mHeaders == null) mHeaders = new ArrayList<>();
-        mHeaders.add(new Header(name, value));
+        if (mHeaders == null) mHeaders = new HashMap<>();
+        Set<String> values = mHeaders.get(name);
+        if (values == null) {
+            values = new HashSet<>();
+            mHeaders.put(name, values);
+        }
+        values.add(value);
+    }
+
+    public void setShortestMs(long shortest) {
+        mShortestMs = shortest;
+    }
+
+    public void setCachePolicy(CachePolicy policy) {
+        mCachePolicy = policy;
     }
 
     /**
      * 请求执行操作
      */
     public ApiCall onBackTask() {
-        startTime = SystemClock.uptimeMillis();
+        mStartMs = SystemClock.uptimeMillis();
 
         Request.Builder requestBuilder = new Request.Builder();
         Call call;
@@ -92,7 +110,7 @@ class AgentTask<T> implements Callback {
                 requestBuilder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
                 break;
         }
-        buildHeader(requestBuilder);
+        ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
 
         if (mCallback instanceof ApiProgressCallback) {
             call = ApiManager.getClient().newBuilder()
@@ -109,32 +127,8 @@ class AgentTask<T> implements Callback {
             mTaskCall = new ApiCall(call);
         }
         mTaskCall.setCall(call);
-        ApiCallManager.get().addCall(tag, mTaskCall);
+        ApiCallManager.get().addCall(mTag, mTaskCall);
         return mTaskCall;
-    }
-
-    /**
-     * 增加Header
-     *
-     * @param request 请求Request.Builder
-     */
-    private void buildHeader(Request.Builder request) {
-        if (request == null) return;
-
-        if (mHeaders != null && !mHeaders.isEmpty()) { // 设置Header
-            for (Header header : mHeaders) {
-                request.addHeader(header.name, header.value);
-            }
-        }
-
-//        // 封装的缓存策略
-//        if (!TextUtils.isEmpty(cachePolicy)) {
-//            request.header(CachePolicy.headerKey(), cachePolicy);
-//        }
-//        if (cacheMaxAge > -1) {
-//            request.header(CachePolicy.maxAgeKey(), String.valueOf(cacheMaxAge));
-//        }
-
     }
 
     @Override
@@ -146,7 +140,7 @@ class AgentTask<T> implements Callback {
 //                handleError(e);
             }
         } else {
-            ApiCallManager.get().removeCall(tag, mTaskCall); // 移除APICall
+            ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         }
     }
 
@@ -159,9 +153,42 @@ class AgentTask<T> implements Callback {
         }
     }
 
+    public void onSuccess(final T result) {
+        if (mCallback == null) return;
+        checkExeTime();
+        runInMainThread(new Runnable() {
+            @Override
+            public void run() {
+                callbackSuccess(result);
+            }
+        });
+    }
+
+    // 处理取消
+    public void onCancel() {
+        if (mCallback == null) return;
+        runInMainThread(new Runnable() {
+            @Override
+            public void run() {
+                callbackCancel();
+            }
+        });
+    }
+
+    public void onError(final int errCode, final String msg) {
+        if (mCallback == null) return;
+        checkExeTime();
+        runInMainThread(new Runnable() {
+            @Override
+            public void run() {
+                callbackError(errCode, msg);
+            }
+        });
+    }
+
     // 回调撤消 - 主进程
     private void callbackCancel() {
-        ApiCallManager.get().removeCall(tag, mTaskCall); // 移除APICall
+        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
 //        if (mLoadViewHolder != null) {
 //            mLoadViewHolder.showFailed(APICode.CANCEL);
 //        }
@@ -176,7 +203,7 @@ class AgentTask<T> implements Callback {
 
     // 回调错误 - 主进程
     private void callbackError(int errCode, String msg) {
-        ApiCallManager.get().removeCall(tag, mTaskCall); // 移除APICall
+        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         if (mTaskCall != null && mTaskCall.isCanceled()) {
             callbackCancel();
             return;
@@ -195,7 +222,7 @@ class AgentTask<T> implements Callback {
 
     // 回调成功
     private void callbackSuccess(T result) {
-        ApiCallManager.get().removeCall(tag, mTaskCall); // 移除APICall
+        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         if (mTaskCall != null && mTaskCall.isCanceled()) {
             callbackCancel();
             return;
@@ -212,20 +239,16 @@ class AgentTask<T> implements Callback {
         }
     }
 
-
-    /**
-     * 请求头简单封装
-     *
-     * @author a_liYa
-     * @date 16/8/8 下午5:53.
-     */
-    private static final class Header {
-        String name;
-        String value;
-
-        public Header(String name, String value) {
-            this.name = name;
-            this.value = value;
+    // 检查执行时间，如果少于最短时间，则该子线程睡眠
+    private void checkExeTime() {
+        // 执行时间
+        long exeMs = SystemClock.uptimeMillis() - mStartMs;
+        if (exeMs < mShortestMs) {
+            try {
+                Thread.sleep(mShortestMs - exeMs);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

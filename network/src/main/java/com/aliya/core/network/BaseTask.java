@@ -3,6 +3,7 @@ package com.aliya.core.network;
 import com.aliya.core.network.api.ApiCall;
 import com.aliya.core.network.api.ApiTask;
 import com.aliya.core.network.api.ApiType;
+import com.aliya.core.network.cache.CachePolicy;
 import com.aliya.core.network.callback.ApiCallback;
 
 /**
@@ -35,7 +36,6 @@ public abstract class BaseTask<T> implements ApiTask {
 
     @Override
     public ApiCall retryExe() {
-
         return exe(mParams);
     }
 
@@ -59,6 +59,18 @@ public abstract class BaseTask<T> implements ApiTask {
     @Override
     public ApiTask addHeader(String name, String value) {
         mAgentTask.addHeader(name, value);
+        return this;
+    }
+
+    @Override
+    public ApiTask setShortestMs(long shortest) {
+        mAgentTask.setShortestMs(shortest);
+        return this;
+    }
+
+    @Override
+    public ApiTask setCachePolicy(CachePolicy policy) {
+        mAgentTask.setCachePolicy(policy);
         return this;
     }
 

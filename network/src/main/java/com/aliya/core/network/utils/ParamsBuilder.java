@@ -4,13 +4,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.aliya.core.network.cache.CachePolicy;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Set;
 
 import okhttp3.FormBody;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 
 /**
@@ -21,6 +25,13 @@ import okhttp3.RequestBody;
  */
 public final class ParamsBuilder {
 
+    /**
+     * 构建 GET 请求参数
+     *
+     * @param paramsMap 参数Map
+     * @param url       url
+     * @return 带参数的url
+     */
     public static @Nullable String buildGet(Map<String, Object> paramsMap, String url) {
         StringBuilder sb = null;
         if (paramsMap != null && !paramsMap.isEmpty()) {
@@ -47,6 +58,12 @@ public final class ParamsBuilder {
         return url;
     }
 
+    /**
+     * 构建 POST 请求参数
+     *
+     * @param paramsMap 参数Map
+     * @return 表单类型的FromBody
+     */
     public static @NonNull FormBody buildPost(Map<String, Object> paramsMap) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (paramsMap != null && !paramsMap.isEmpty()) {
@@ -61,8 +78,15 @@ public final class ParamsBuilder {
         return formBodyBuilder.build();
     }
 
+    /**
+     * 构建 上传文件 请求参数
+     *
+     * @param paramsMap 参数Map
+     * @param filesMap  文件Map
+     * @return 多类型的Body
+     */
     public static @NonNull MultipartBody buildUpload(Map<String, Object> paramsMap,
-                                                     Map<String, String> filesMap) {
+                              Map<String, String> filesMap) {
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
 
@@ -96,6 +120,41 @@ public final class ParamsBuilder {
             }
         }
         return multipartBodyBuilder.build();
+    }
+
+    /**
+     * 构建 header
+     *
+     * @param request     request
+     * @param headers     header map
+     * @param cachePolicy 缓存策略
+     */
+    public static void buildHeader(Request.Builder request,
+                                   Map<String, Set<String>> headers,
+                                   CachePolicy cachePolicy) {
+        if (request == null) return;
+
+        if (headers != null && !headers.isEmpty()) { // 设置Header
+            for (Map.Entry<String, Set<String>> entry : headers.entrySet()) {
+                String name = entry.getKey();
+                Set<String> values = entry.getValue();
+                if (values != null) {
+                    for (String value : values) {
+                        request.addHeader(name, value);
+                    }
+                }
+            }
+        }
+
+        // 封装的缓存策略
+        if (cachePolicy != null) {
+            if (!TextUtils.isEmpty(cachePolicy.cachePolicy)) {
+                request.header(CachePolicy.headerKey(), cachePolicy.cachePolicy);
+            }
+            if (cachePolicy.cacheMaxAge > CachePolicy.MAX_AGE_NO_VALUE) {
+                request.header(CachePolicy.maxAgeKey(), String.valueOf(cachePolicy.cacheMaxAge));
+            }
+        }
     }
 
 }

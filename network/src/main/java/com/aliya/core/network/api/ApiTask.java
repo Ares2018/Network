@@ -1,5 +1,7 @@
 package com.aliya.core.network.api;
 
+import com.aliya.core.network.cache.CachePolicy;
+
 /**
  * Api task
  *
@@ -21,5 +23,9 @@ public interface ApiTask {
     ApiTask putFile(String key, String filePath);
 
     ApiTask addHeader(String name, String value);
+
+    ApiTask setShortestMs(long shortest);
+
+    ApiTask setCachePolicy(CachePolicy policy);
 
 }

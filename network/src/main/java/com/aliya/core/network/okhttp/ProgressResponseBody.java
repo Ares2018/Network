@@ -1,4 +1,4 @@
-package com.aliya.core.network.progress;
+package com.aliya.core.network.okhttp;
 
 import com.aliya.core.network.callback.ApiProgressCallback;
 
