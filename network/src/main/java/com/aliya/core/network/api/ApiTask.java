@@ -8,6 +8,18 @@ package com.aliya.core.network.api;
  */
 public interface ApiTask {
 
+    ApiCall exe(Object... params);
 
+    ApiCall retryExe();
+
+    void onSetupParams(Object... params);
+
+    String getApi();
+
+    ApiTask put(String key, Object value);
+
+    ApiTask putFile(String key, String filePath);
+
+    ApiTask addHeader(String name, String value);
 
 }

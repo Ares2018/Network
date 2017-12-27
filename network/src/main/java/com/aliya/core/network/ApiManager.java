@@ -1,5 +1,7 @@
 package com.aliya.core.network;
 
+import okhttp3.OkHttpClient;
+
 /**
  * Api Manager
  *
@@ -8,6 +10,9 @@ package com.aliya.core.network;
  */
 public class ApiManager {
 
+    private static OkHttpClient sClient;
 
-
+    public static OkHttpClient getClient() {
+        return sClient;
+    }
 }
