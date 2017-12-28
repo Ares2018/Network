@@ -138,7 +138,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             if (call.isCanceled()) {
                 onCancel();
             } else {
-//                handleError(e);
+                ApiManager.getApiConfig()
+                        .getExceptionTransform().onExceptionTransform(e, this);
             }
         } else {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
@@ -150,7 +151,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (call != null && call.isCanceled()) {
             onCancel();
         } else {
-            ApiManager.getParseResponse().onParseResponse(response, this, mApiTask.getClass());
+            ApiManager.getApiConfig()
+                    .getParseResponse().onParseResponse(response, this, mApiTask.getClass());
         }
     }
 

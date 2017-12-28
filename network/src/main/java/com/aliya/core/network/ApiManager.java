@@ -58,15 +58,14 @@ public class ApiManager {
         return sClient;
     }
 
-    private static ParseResponse sParseResponse;
+    private static ApiConfig sApiConfig;
 
-
-    public static void setParseResponse(ParseResponse parseResponse) {
-        sParseResponse = parseResponse;
+    public static void configBuild(ApiConfig.Builder builder) {
+        sApiConfig = builder.build();
     }
 
-    public static ParseResponse getParseResponse() {
-        return sParseResponse;
+    public static ApiConfig getApiConfig() {
+        return sApiConfig;
     }
 
     /**

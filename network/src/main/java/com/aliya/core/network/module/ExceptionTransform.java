@@ -1,5 +1,7 @@
 package com.aliya.core.network.module;
 
+import android.support.annotation.NonNull;
+
 import com.aliya.core.network.callback.AgentCallback;
 
 import java.io.IOException;
@@ -13,6 +15,6 @@ import java.io.IOException;
 public interface ExceptionTransform {
 
     //  子线程
-    <T> void onExceptionTransform(IOException e, AgentCallback<T> callback);
+    <T> void onExceptionTransform(IOException e, @NonNull AgentCallback<T> callback);
 
 }

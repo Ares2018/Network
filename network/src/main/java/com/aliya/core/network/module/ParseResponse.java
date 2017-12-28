@@ -1,5 +1,7 @@
 package com.aliya.core.network.module;
 
+import android.support.annotation.NonNull;
+
 import com.aliya.core.network.api.ApiTask;
 import com.aliya.core.network.callback.AgentCallback;
 
@@ -14,7 +16,7 @@ import okhttp3.Response;
 public interface ParseResponse {
 
     // 子线程
-    <T> void onParseResponse(Response response, AgentCallback<T> callback,
-                             Class<? extends ApiTask> clazz);
+    <T> void onParseResponse(@NonNull Response response, @NonNull AgentCallback<T> callback,
+                             @NonNull Class<? extends ApiTask> clazz);
 
 }
