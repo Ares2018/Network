@@ -2,9 +2,7 @@ package com.aliya.core;
 
 import android.app.Application;
 
-import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
-import com.aliya.core.network.ParseResponseImpl;
 
 /**
  * Application
@@ -18,8 +16,5 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         ApiManager.setContext(this);
-        ApiManager.configBuild(
-                ApiConfig.newBuilder()
-                        .parseResponse(new ParseResponseImpl()));
     }
 }

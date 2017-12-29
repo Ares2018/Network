@@ -1,12 +1,12 @@
-package com.aliya.core.network;
+package com.core.network.option.impl;
 
 import android.support.annotation.NonNull;
 
+import com.core.network.ApiManager;
 import com.core.network.api.ApiTask;
 import com.core.network.callback.AgentCallback;
-import com.core.network.module.ParseResponse;
+import com.core.network.option.ParseResponse;
 import com.core.network.utils.GenericUtils;
-import com.core.network.ApiManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 import okhttp3.Response;
 
 /**
- * ParseResponse的示例
+ * {@link ParseResponse}的默认实现
  *
  * @author a_liYa
  * @date 2017/12/28 09:47.
@@ -39,7 +39,6 @@ public class ParseResponseImpl implements ParseResponse {
     private <T> void handleBody(@NonNull Response response, @NonNull AgentCallback<T> callback,
                                 @NonNull Class<? extends ApiTask> clazz) throws IOException {
         String body = response.body().string();
-
 
         List<Class> generics = GenericUtils.getGenericClass(clazz);
         T data = null;

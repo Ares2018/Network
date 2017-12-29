@@ -1,7 +1,11 @@
 package com.core.network;
 
-import com.core.network.module.ExceptionTransform;
-import com.core.network.module.ParseResponse;
+import com.core.network.option.ExceptionTransform;
+import com.core.network.option.ParseResponse;
+import com.core.network.option.UrlTransform;
+import com.core.network.option.impl.ExceptionTransformImpl;
+import com.core.network.option.impl.ParseResponseImpl;
+import com.core.network.option.impl.UrlTransformImpl;
 
 /**
  * 网络配置相关
@@ -13,10 +17,16 @@ public class ApiConfig {
 
     private ParseResponse mParseResponse;
 
+    private UrlTransform mUrlTransform;
+
     private ExceptionTransform mExceptionTransform;
 
     public ParseResponse getParseResponse() {
         return mParseResponse;
+    }
+
+    public UrlTransform getUrlTransform() {
+        return mUrlTransform;
     }
 
     public ExceptionTransform getExceptionTransform() {
@@ -24,8 +34,21 @@ public class ApiConfig {
     }
 
     private ApiConfig(Builder builder) {
-        mParseResponse = builder.mParseResponse;
-        mExceptionTransform = builder.mExceptionTransform;
+        if (null == builder.urlTransform) {
+            mUrlTransform = new UrlTransformImpl();
+        } else {
+            mUrlTransform = builder.urlTransform;
+        }
+        if (null == builder.parseResponse) {
+            mParseResponse = new ParseResponseImpl();
+        } else {
+            mParseResponse = builder.parseResponse;
+        }
+        if (null == builder.exceptionTransform) {
+            mExceptionTransform = new ExceptionTransformImpl();
+        } else {
+            mExceptionTransform = builder.exceptionTransform;
+        }
     }
 
     public static Builder newBuilder() {
@@ -33,19 +56,25 @@ public class ApiConfig {
     }
 
     public static final class Builder {
-        private ParseResponse mParseResponse;
-        private ExceptionTransform mExceptionTransform;
+        private ParseResponse parseResponse;
+        private UrlTransform urlTransform;
+        private ExceptionTransform exceptionTransform;
 
         private Builder() {
         }
 
-        public Builder parseResponse(ParseResponse val) {
-            mParseResponse = val;
+        public Builder parseResponse(ParseResponse parseResponse) {
+            this.parseResponse = parseResponse;
             return this;
         }
 
-        public Builder exceptionTransform(ExceptionTransform val) {
-            mExceptionTransform = val;
+        public Builder urlTransform(UrlTransform urlTransform) {
+            this.urlTransform = urlTransform;
+            return this;
+        }
+
+        public Builder exceptionTransform(ExceptionTransform exceptionTransform) {
+            this.exceptionTransform = exceptionTransform;
             return this;
         }
 

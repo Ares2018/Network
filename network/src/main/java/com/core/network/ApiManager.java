@@ -64,6 +64,13 @@ public class ApiManager {
     }
 
     public static ApiConfig getApiConfig() {
+        if (sApiConfig == null) {
+            synchronized (ApiManager.class) {
+                if (sApiConfig == null) {
+                    sApiConfig = ApiConfig.newBuilder().build();
+                }
+            }
+        }
         return sApiConfig;
     }
 
