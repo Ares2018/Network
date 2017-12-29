@@ -2,8 +2,8 @@ package com.aliya.core.network;
 
 import android.support.annotation.NonNull;
 
-import com.aliya.core.network.callback.AgentCallback;
-import com.aliya.core.network.module.ExceptionTransform;
+import com.core.network.callback.AgentCallback;
+import com.core.network.module.ExceptionTransform;
 
 import java.io.IOException;
 

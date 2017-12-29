@@ -1,10 +1,10 @@
-package com.aliya.core.network;
+package com.core.network;
 
-import com.aliya.core.network.api.ApiCall;
-import com.aliya.core.network.api.ApiTask;
-import com.aliya.core.network.api.ApiType;
-import com.aliya.core.network.cache.CachePolicy;
-import com.aliya.core.network.callback.ApiCallback;
+import com.core.network.api.ApiCall;
+import com.core.network.api.ApiTask;
+import com.core.network.api.ApiType;
+import com.core.network.cache.CachePolicy;
+import com.core.network.callback.ApiCallback;
 
 /**
  * Api 网络请求基类封装

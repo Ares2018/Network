@@ -1,9 +1,9 @@
 package com.aliya.core.task;
 
 
-import com.aliya.core.network.BaseTask;
-import com.aliya.core.network.api.ApiType;
-import com.aliya.core.network.callback.ApiCallback;
+import com.core.network.BaseTask;
+import com.core.network.api.ApiType;
+import com.core.network.callback.ApiCallback;
 
 /**
  * 查询二维码

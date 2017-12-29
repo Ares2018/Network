@@ -1,4 +1,4 @@
-package com.aliya.core.network.api;
+package com.core.network.api;
 
 import okhttp3.Call;
 

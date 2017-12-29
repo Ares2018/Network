@@ -1,6 +1,6 @@
-package com.aliya.core.network.api;
+package com.core.network.api;
 
-import com.aliya.core.network.cache.CachePolicy;
+import com.core.network.cache.CachePolicy;
 
 /**
  * Api task

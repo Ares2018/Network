@@ -2,8 +2,8 @@ package com.aliya.core;
 
 import android.app.Application;
 
-import com.aliya.core.network.ApiConfig;
-import com.aliya.core.network.ApiManager;
+import com.core.network.ApiConfig;
+import com.core.network.ApiManager;
 import com.aliya.core.network.ParseResponseImpl;
 
 /**

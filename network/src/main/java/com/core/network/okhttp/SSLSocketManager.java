@@ -1,4 +1,4 @@
-package com.aliya.core.network.okhttp;
+package com.core.network.okhttp;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;

@@ -1,4 +1,4 @@
-package com.aliya.core.network.utils;
+package com.core.network.utils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

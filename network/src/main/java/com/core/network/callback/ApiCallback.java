@@ -1,4 +1,4 @@
-package com.aliya.core.network.callback;
+package com.core.network.callback;
 
 /**
  * Api接口回调

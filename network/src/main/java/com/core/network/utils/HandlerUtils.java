@@ -1,4 +1,4 @@
-package com.aliya.core.network.utils;
+package com.core.network.utils;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.aliya.core.network.callback.ApiCallback;
+import com.core.network.callback.ApiCallback;
 import com.aliya.core.task.QRCodeTask;
 
 public class MainActivity extends AppCompatActivity {

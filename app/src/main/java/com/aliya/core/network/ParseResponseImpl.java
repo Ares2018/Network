@@ -2,10 +2,11 @@ package com.aliya.core.network;
 
 import android.support.annotation.NonNull;
 
-import com.aliya.core.network.api.ApiTask;
-import com.aliya.core.network.callback.AgentCallback;
-import com.aliya.core.network.module.ParseResponse;
-import com.aliya.core.network.utils.GenericUtils;
+import com.core.network.api.ApiTask;
+import com.core.network.callback.AgentCallback;
+import com.core.network.module.ParseResponse;
+import com.core.network.utils.GenericUtils;
+import com.core.network.ApiManager;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.aliya.core.network.cache;
+package com.core.network.cache;
 
 import android.text.TextUtils;
 
-import com.aliya.core.network.ApiManager;
+import com.core.network.ApiManager;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

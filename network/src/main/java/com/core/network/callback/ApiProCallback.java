@@ -1,4 +1,4 @@
-package com.aliya.core.network.callback;
+package com.core.network.callback;
 
 /**
  * ApiCallback 拓展类

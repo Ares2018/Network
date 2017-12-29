@@ -1,4 +1,4 @@
-package com.aliya.core.network.api;
+package com.core.network.api;
 
 /**
  * 网络请求类型 - 枚举

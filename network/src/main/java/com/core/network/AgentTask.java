@@ -1,17 +1,17 @@
-package com.aliya.core.network;
+package com.core.network;
 
 import android.os.SystemClock;
 
-import com.aliya.core.network.api.ApiCall;
-import com.aliya.core.network.api.ApiTask;
-import com.aliya.core.network.api.ApiType;
-import com.aliya.core.network.cache.CachePolicy;
-import com.aliya.core.network.callback.AgentCallback;
-import com.aliya.core.network.callback.ApiCallback;
-import com.aliya.core.network.callback.ApiProCallback;
-import com.aliya.core.network.callback.ApiProgressCallback;
-import com.aliya.core.network.okhttp.ProgressInterceptor;
-import com.aliya.core.network.utils.ParamsBuilder;
+import com.core.network.api.ApiCall;
+import com.core.network.api.ApiTask;
+import com.core.network.api.ApiType;
+import com.core.network.cache.CachePolicy;
+import com.core.network.callback.AgentCallback;
+import com.core.network.callback.ApiCallback;
+import com.core.network.callback.ApiProCallback;
+import com.core.network.callback.ApiProgressCallback;
+import com.core.network.okhttp.ProgressInterceptor;
+import com.core.network.utils.ParamsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.aliya.core.network.utils.HandlerUtils.runInMainThread;
+import static com.core.network.utils.HandlerUtils.runInMainThread;
 
 /**
  * 代理 Task

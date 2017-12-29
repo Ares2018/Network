@@ -1,10 +1,10 @@
-package com.aliya.core.network.utils;
+package com.core.network.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.aliya.core.network.cache.CachePolicy;
+import com.core.network.cache.CachePolicy;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

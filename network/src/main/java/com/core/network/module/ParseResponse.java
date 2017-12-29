@@ -1,9 +1,9 @@
-package com.aliya.core.network.module;
+package com.core.network.module;
 
 import android.support.annotation.NonNull;
 
-import com.aliya.core.network.api.ApiTask;
-import com.aliya.core.network.callback.AgentCallback;
+import com.core.network.api.ApiTask;
+import com.core.network.callback.AgentCallback;
 
 import okhttp3.Response;
 

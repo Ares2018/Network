@@ -1,7 +1,7 @@
-package com.aliya.core.network;
+package com.core.network;
 
-import com.aliya.core.network.module.ExceptionTransform;
-import com.aliya.core.network.module.ParseResponse;
+import com.core.network.module.ExceptionTransform;
+import com.core.network.module.ParseResponse;
 
 /**
  * 网络配置相关

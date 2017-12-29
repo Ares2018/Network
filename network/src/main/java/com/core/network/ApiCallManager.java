@@ -1,6 +1,6 @@
-package com.aliya.core.network;
+package com.core.network;
 
-import com.aliya.core.network.api.ApiCall;
+import com.core.network.api.ApiCall;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
-package com.aliya.core.network.okhttp;
+package com.core.network.okhttp;
 
-import com.aliya.core.network.callback.ApiProgressCallback;
+import com.core.network.callback.ApiProgressCallback;
 
 import java.io.IOException;
 

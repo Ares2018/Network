@@ -1,4 +1,4 @@
-package com.aliya.core.network.cache;
+package com.core.network.cache;
 
 import android.support.annotation.StringDef;
 
