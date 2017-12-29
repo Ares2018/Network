@@ -1,5 +1,7 @@
 package com.core.network.option;
 
+import android.support.annotation.AnyThread;
+
 /**
  * url拼接/转换 - 接口
  *
@@ -8,6 +10,7 @@ package com.core.network.option;
  */
 public interface UrlTransform {
 
+    @AnyThread
     String onUrlTransform(String api);
 
 }

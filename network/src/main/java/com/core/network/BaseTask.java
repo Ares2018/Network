@@ -29,9 +29,7 @@ public abstract class BaseTask<T> implements ApiTask {
 
         onSetupParams(params);
 
-        mTaskCall = mAgentTask.onBackTask();
-
-        return null;
+        return mAgentTask.doTask();
     }
 
     @Override

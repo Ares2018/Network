@@ -1,6 +1,7 @@
 package com.core.network.option;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.core.network.api.ApiTask;
 import com.core.network.callback.AgentCallback;
@@ -16,7 +17,8 @@ import okhttp3.Response;
 public interface ParseResponse {
 
     // 子线程
+    @WorkerThread
     <T> void onParseResponse(@NonNull Response response, @NonNull AgentCallback<T> callback,
-                             @NonNull Class<? extends ApiTask> clazz);
+                             @NonNull ApiTask apiTask);
 
 }

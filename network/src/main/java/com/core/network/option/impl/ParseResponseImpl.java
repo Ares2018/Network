@@ -23,10 +23,10 @@ public class ParseResponseImpl implements ParseResponse {
 
     @Override
     public <T> void onParseResponse(@NonNull Response response, @NonNull AgentCallback<T>
-            callback, @NonNull Class<? extends ApiTask> clazz) {
+            callback, @NonNull ApiTask apiTask) {
         if (200 == response.code()) { // 请求成功
             try {
-                handleBody(response, callback, clazz);
+                handleBody(response, callback, apiTask.getClass());
             } catch (IOException e) {
                 ApiManager.getApiConfig()
                         .getExceptionTransform().onExceptionTransform(e, callback);

@@ -3,6 +3,7 @@ package com.core.network;
 import android.os.SystemClock;
 
 import com.core.network.api.ApiCall;
+import com.core.network.api.ApiPreFilter;
 import com.core.network.api.ApiTask;
 import com.core.network.api.ApiType;
 import com.core.network.cache.CachePolicy;
@@ -16,6 +17,7 @@ import com.core.network.utils.ParamsBuilder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,35 +93,46 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     /**
      * 请求执行操作
      */
-    public ApiCall onBackTask() {
+    public ApiCall doTask() {
         mStartMs = SystemClock.uptimeMillis();
 
-        Request.Builder requestBuilder = new Request.Builder();
-        Call call;
+        List<ApiPreFilter> preFilters = ApiManager.getApiConfig().getApiPreFilters();
+        boolean filterResult = false;
+        if (preFilters != null) {
+            for (ApiPreFilter filter : preFilters) {
+                if (filter != null && filter.onFilter(mApiTask)) {
+                    filterResult = true;
+                }
+            }
+        }
+        Call call = null;
+        if (!filterResult) {
+            Request.Builder requestBuilder = new Request.Builder();
+            String url = ApiManager.getApiConfig().getUrlTransform().onUrlTransform(mApiTask
+                    .getApi());
 
-        String url = ApiManager.getApiConfig().getUrlTransform().onUrlTransform(mApiTask.getApi());
-
-        switch (mApiType) {
-            case GET:
-                requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url));
-                break;
-            case POST:
+            switch (mApiType) {
+                case GET:
+                    requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url));
+                    break;
+                case POST:
 //              RequestBody requestBody = RequestBody.create(
 //                      MediaType.parse("application/json; charset=utf-8"), jsonString(mParamsMap));
-                requestBuilder.url(url).post(ParamsBuilder.buildPost(mParamsMap));
-                break;
-            case POST_UPLOAD:
-                requestBuilder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
-                break;
-        }
-        ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
+                    requestBuilder.url(url).post(ParamsBuilder.buildPost(mParamsMap));
+                    break;
+                case POST_UPLOAD:
+                    requestBuilder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
+                    break;
+            }
+            ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
 
-        if (mCallback instanceof ApiProgressCallback) {
-            call = ApiManager.getClient().newBuilder()
-                    .addInterceptor(new ProgressInterceptor((ApiProgressCallback) mCallback))
-                    .build().newCall(requestBuilder.build());
-        } else {
-            call = ApiManager.getClient().newCall(requestBuilder.build());
+            if (mCallback instanceof ApiProgressCallback) {
+                call = ApiManager.getClient().newBuilder()
+                        .addInterceptor(new ProgressInterceptor((ApiProgressCallback) mCallback))
+                        .build().newCall(requestBuilder.build());
+            } else {
+                call = ApiManager.getClient().newCall(requestBuilder.build());
+            }
         }
 
         if (call != null) {
@@ -153,7 +166,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             onCancel();
         } else {
             ApiManager.getApiConfig()
-                    .getParseResponse().onParseResponse(response, this, mApiTask.getClass());
+                    .getParseResponse().onParseResponse(response, this, mApiTask);
         }
     }
 

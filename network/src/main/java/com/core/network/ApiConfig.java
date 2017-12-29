@@ -1,11 +1,14 @@
 package com.core.network;
 
+import com.core.network.api.ApiPreFilter;
 import com.core.network.option.ExceptionTransform;
 import com.core.network.option.ParseResponse;
 import com.core.network.option.UrlTransform;
 import com.core.network.option.impl.ExceptionTransformImpl;
 import com.core.network.option.impl.ParseResponseImpl;
 import com.core.network.option.impl.UrlTransformImpl;
+
+import java.util.List;
 
 /**
  * 网络配置相关
@@ -21,6 +24,8 @@ public class ApiConfig {
 
     private ExceptionTransform mExceptionTransform;
 
+    private List<ApiPreFilter> mApiPreFilters;
+
     public ParseResponse getParseResponse() {
         return mParseResponse;
     }
@@ -31,6 +36,10 @@ public class ApiConfig {
 
     public ExceptionTransform getExceptionTransform() {
         return mExceptionTransform;
+    }
+
+    public List<ApiPreFilter> getApiPreFilters() {
+        return mApiPreFilters;
     }
 
     private ApiConfig(Builder builder) {
