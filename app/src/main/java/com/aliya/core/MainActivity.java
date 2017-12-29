@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(String data) {
                 Log.e("TAG", "onSuccess " + data);
             }
-        }).exe();
+        }).setTag(this).exe();
 
     }
 }

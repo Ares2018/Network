@@ -1,8 +1,11 @@
 package com.core.network;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 
 import com.core.network.cache.CacheInterceptor;
 import com.core.network.okhttp.SSLSocketManager;
@@ -29,6 +32,10 @@ public class ApiManager {
     public static void setContext(Context context) {
         if (context != null) {
             sContext = context.getApplicationContext();
+            if (sContext instanceof Application) {
+                ((Application) sContext)
+                        .registerActivityLifecycleCallbacks(new LifecycleCallbacks());
+            }
         }
     }
 
@@ -86,5 +93,37 @@ public class ApiManager {
         return networkInfo != null && networkInfo.isConnected();
     }
 
+    static class LifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            ApiCallManager.get().cancel(activity);
+        }
+
+    }
 
 }
