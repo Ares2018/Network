@@ -25,4 +25,6 @@ dependencies {
 
     implementation project(':network')
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.alibaba:fastjson:1.1.64.android'
+    implementation 'com.google.code.gson:gson:2.6.2'
 }

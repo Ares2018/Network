@@ -1,13 +1,18 @@
 package com.core.network;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.core.network.api.ApiPreFilter;
 import com.core.network.option.ExceptionTransform;
+import com.core.network.option.JsonParse;
 import com.core.network.option.ParseResponse;
 import com.core.network.option.UrlTransform;
 import com.core.network.option.impl.ExceptionTransformImpl;
 import com.core.network.option.impl.ParseResponseImpl;
 import com.core.network.option.impl.UrlTransformImpl;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,28 +24,30 @@ import java.util.List;
  */
 public class ApiConfig {
 
-    private ParseResponse mParseResponse;
-
+    private JsonParse mJsonParse;
     private UrlTransform mUrlTransform;
-
+    private ParseResponse mParseResponse;
+    private List<ApiPreFilter> mApiPreFilters;
     private ExceptionTransform mExceptionTransform;
 
-    private List<ApiPreFilter> mApiPreFilters;
-
-    public ParseResponse getParseResponse() {
+    public @NonNull ParseResponse getParseResponse() {
         return mParseResponse;
     }
 
-    public UrlTransform getUrlTransform() {
+    public @NonNull UrlTransform getUrlTransform() {
         return mUrlTransform;
     }
 
-    public ExceptionTransform getExceptionTransform() {
+    public @NonNull ExceptionTransform getExceptionTransform() {
         return mExceptionTransform;
     }
 
-    public List<ApiPreFilter> getApiPreFilters() {
+    public @Nullable List<ApiPreFilter> getApiPreFilters() {
         return mApiPreFilters;
+    }
+
+    public @NonNull JsonParse getJsonParse() {
+        return mJsonParse;
     }
 
     private ApiConfig(Builder builder) {
@@ -59,6 +66,16 @@ public class ApiConfig {
         } else {
             mExceptionTransform = builder.exceptionTransform;
         }
+        if (null == builder.jsonParse) {
+            mJsonParse = new JsonParse() {
+                @Override
+                public <T> T onJsonParse(String text, Type type) {
+                    return null;
+                }
+            };
+        } else {
+            mJsonParse = builder.jsonParse;
+        }
         mApiPreFilters = builder.apiPreFilters;
     }
 
@@ -71,6 +88,7 @@ public class ApiConfig {
         private UrlTransform urlTransform;
         private ExceptionTransform exceptionTransform;
         private List<ApiPreFilter> apiPreFilters;
+        private JsonParse jsonParse;
 
         private Builder() {
         }
@@ -87,6 +105,11 @@ public class ApiConfig {
 
         public Builder exceptionTransform(ExceptionTransform exceptionTransform) {
             this.exceptionTransform = exceptionTransform;
+            return this;
+        }
+
+        public Builder jsonParse(JsonParse jsonParse) {
+            this.jsonParse = jsonParse;
             return this;
         }
 

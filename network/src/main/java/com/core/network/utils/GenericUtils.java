@@ -1,9 +1,9 @@
 package com.core.network.utils;
 
+import android.support.annotation.Nullable;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 泛型 - 工具类
@@ -17,39 +17,22 @@ public final class GenericUtils {
      * 获取类申明的泛型
      *
      * @param clazz 目标类
-     * @return 返回泛型集合 （可能有多个泛型 eg：Map<K, V>）
+     * @return 返回泛型对应type {@link Type}, 获取失败返回null.
      */
-    public static List<Class> getGenericClass(Class clazz) {
-        List<Class> classes = new ArrayList<>();
-
+    public static @Nullable Type getGenericType(Class clazz) {
         while (clazz != Object.class) {
-
             Type t = clazz.getGenericSuperclass();
             if (t instanceof ParameterizedType) {
                 Type[] args = ((ParameterizedType) t).getActualTypeArguments();
                 if (args[0] instanceof Class) {
-                    classes.add((Class) args[0]);
-                    return classes;
+                    return args[0];
                 } else if (args[0] instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType) args[0];
-
-                    if (pt.getRawType() instanceof Class) {
-                        classes.add((Class) pt.getRawType());
-                    }
-
-                    Type[] atArgs = pt.getActualTypeArguments();
-                    for (Type type : atArgs) {
-                        if (type instanceof Class) {
-                            classes.add((Class) type);
-                        }
-                    }
-                    return classes;
+                    return args[0];
                 }
             }
             clazz = clazz.getSuperclass();
         }
-
-        return classes;
+        return null;
     }
 
 }

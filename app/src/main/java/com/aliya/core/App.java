@@ -3,6 +3,7 @@ package com.aliya.core;
 import android.app.Application;
 
 import com.aliya.core.network.AppApiPreFilter;
+import com.aliya.core.network.AppJsonParse;
 import com.aliya.core.network.AppUrlTransform;
 import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
@@ -23,6 +24,7 @@ public class App extends Application {
                 ApiConfig.newBuilder()
                         .urlTransform(new AppUrlTransform())
                         .addApiPreFilter(new AppApiPreFilter())
+                        .jsonParse(new AppJsonParse())
         );
     }
 }

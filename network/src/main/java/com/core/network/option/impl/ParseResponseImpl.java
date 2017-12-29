@@ -9,7 +9,7 @@ import com.core.network.option.ParseResponse;
 import com.core.network.utils.GenericUtils;
 
 import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.Type;
 
 import okhttp3.Response;
 
@@ -40,17 +40,16 @@ public class ParseResponseImpl implements ParseResponse {
                                 @NonNull Class<? extends ApiTask> clazz) throws IOException {
         String body = response.body().string();
 
-        List<Class> generics = GenericUtils.getGenericClass(clazz);
-        T data = null;
-        if (generics.size() == 0) {
-            throw new IllegalArgumentException(getClass().getName() + "泛型声明不合法");
-        } else if (generics.size() == 1) { // 只有一个泛型
-            Class indexClazz = generics.get(0);
-            if (indexClazz == Void.class) { // Void.class
-                data = null;
-            } else if (indexClazz == String.class) {
-                data = (T) body;
-            }
+        T data;
+        Type type = GenericUtils.getGenericType(clazz);
+        if (type == null) {
+            throw new IllegalArgumentException(getClass().getName() + "泛型未声明或者不合法");
+        } else if (type == Void.class) {
+            data = null;
+        } else if (type == String.class) {
+            data = (T) body;
+        } else {
+            data = ApiManager.getApiConfig().getJsonParse().onJsonParse(body, type);
         }
         callback.onSuccess(data);
     }

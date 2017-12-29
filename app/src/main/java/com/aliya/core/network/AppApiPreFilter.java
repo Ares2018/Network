@@ -16,7 +16,7 @@ public class AppApiPreFilter implements ApiPreFilter {
 
     @Override
     public boolean onFilter(@NonNull ApiTask apiTask) {
-        Log.e("TAG", "onFilter " + apiTask.getApi());
+//        Log.e("TAG", "onFilter " + apiTask.getApi());
         return false;
     }
 }

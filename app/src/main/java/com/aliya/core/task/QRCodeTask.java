@@ -1,5 +1,6 @@
 package com.aliya.core.task;
 
+import com.aliya.core.entity.QREntity;
 import com.core.network.BaseTask;
 import com.core.network.api.ApiType;
 import com.core.network.callback.ApiCallback;
@@ -10,10 +11,10 @@ import com.core.network.callback.ApiCallback;
  * @author a_liYa
  * @date 2017/12/28 12:43.
  */
-public class QRCodeTask extends BaseTask<String> {
+public class QRCodeTask extends BaseTask<QREntity> {
 
-    public QRCodeTask(ApiCallback<String> callback) {
-        super(callback, ApiType.POST);
+    public QRCodeTask(ApiCallback<QREntity> callback) {
+        super(callback, ApiType.GET);
     }
 
     @Override
@@ -28,6 +29,6 @@ public class QRCodeTask extends BaseTask<String> {
 
     @Override
     public String getApi() {
-        return "/qrcode/api";
+        return "http://apis.juhe.cn/qrcode/api";
     }
 }
