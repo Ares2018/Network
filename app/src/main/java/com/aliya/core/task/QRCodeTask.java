@@ -1,6 +1,5 @@
 package com.aliya.core.task;
 
-
 import com.core.network.BaseTask;
 import com.core.network.api.ApiType;
 import com.core.network.callback.ApiCallback;

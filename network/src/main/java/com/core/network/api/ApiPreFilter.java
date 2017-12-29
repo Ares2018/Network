@@ -1,5 +1,7 @@
 package com.core.network.api;
 
+import android.support.annotation.NonNull;
+
 /**
  * 过滤器，在网络请求之前调用 - 接口
  *
@@ -8,6 +10,6 @@ package com.core.network.api;
  */
 public interface ApiPreFilter {
 
-    boolean onFilter(ApiTask apiTask);
+    boolean onFilter(@NonNull ApiTask apiTask);
 
 }

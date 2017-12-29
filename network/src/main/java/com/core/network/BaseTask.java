@@ -15,7 +15,6 @@ import com.core.network.callback.ApiCallback;
 public abstract class BaseTask<T> implements ApiTask {
 
     private Object[] mParams;
-    private ApiCall mTaskCall;
     private AgentTask mAgentTask;
 
     public BaseTask(ApiCallback<T> callback, ApiType type) {

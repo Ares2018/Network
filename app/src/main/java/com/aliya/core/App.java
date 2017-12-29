@@ -2,6 +2,7 @@ package com.aliya.core;
 
 import android.app.Application;
 
+import com.aliya.core.network.AppApiPreFilter;
 import com.aliya.core.network.AppUrlTransform;
 import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
@@ -20,6 +21,8 @@ public class App extends Application {
         ApiManager.setContext(this);
         ApiManager.configBuild(
                 ApiConfig.newBuilder()
-                        .urlTransform(new AppUrlTransform()));
+                        .urlTransform(new AppUrlTransform())
+                        .addApiPreFilter(new AppApiPreFilter())
+        );
     }
 }

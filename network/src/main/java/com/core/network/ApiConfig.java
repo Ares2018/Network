@@ -8,6 +8,7 @@ import com.core.network.option.impl.ExceptionTransformImpl;
 import com.core.network.option.impl.ParseResponseImpl;
 import com.core.network.option.impl.UrlTransformImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +59,7 @@ public class ApiConfig {
         } else {
             mExceptionTransform = builder.exceptionTransform;
         }
+        mApiPreFilters = builder.apiPreFilters;
     }
 
     public static Builder newBuilder() {
@@ -68,6 +70,7 @@ public class ApiConfig {
         private ParseResponse parseResponse;
         private UrlTransform urlTransform;
         private ExceptionTransform exceptionTransform;
+        private List<ApiPreFilter> apiPreFilters;
 
         private Builder() {
         }
@@ -84,6 +87,16 @@ public class ApiConfig {
 
         public Builder exceptionTransform(ExceptionTransform exceptionTransform) {
             this.exceptionTransform = exceptionTransform;
+            return this;
+        }
+
+        public Builder addApiPreFilter(ApiPreFilter filter) {
+            if (filter != null) {
+                if (apiPreFilters == null) {
+                    apiPreFilters = new ArrayList<>();
+                }
+                apiPreFilters.add(filter);
+            }
             return this;
         }
 

@@ -141,8 +141,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (mTaskCall == null) {
             mTaskCall = new ApiCall(call);
         }
-        mTaskCall.setCall(call);
-        ApiCallManager.get().addCall(mTag, mTaskCall);
+        if (call != null) {
+            mTaskCall.setCall(call);
+            ApiCallManager.get().addCall(mTag, mTaskCall);
+        }
         return mTaskCall;
     }
 
