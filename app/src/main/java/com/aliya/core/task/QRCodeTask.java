@@ -29,6 +29,6 @@ public class QRCodeTask extends BaseTask<String> {
 
     @Override
     public String getApi() {
-        return "http://apis.juhe.cn/qrcode/api";
+        return "/qrcode/api";
     }
 }

@@ -2,6 +2,8 @@ package com.aliya.core;
 
 import android.app.Application;
 
+import com.aliya.core.network.AppUrlTransform;
+import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
 
 /**
@@ -16,5 +18,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         ApiManager.setContext(this);
+        ApiManager.configBuild(
+                ApiConfig.newBuilder()
+                        .urlTransform(new AppUrlTransform()));
     }
 }

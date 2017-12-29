@@ -97,7 +97,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         Request.Builder requestBuilder = new Request.Builder();
         Call call;
 
-        String url = mApiTask.getApi();
+        String url = ApiManager.getApiConfig().getUrlTransform().onUrlTransform(mApiTask.getApi());
+
         switch (mApiType) {
             case GET:
                 requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url));
