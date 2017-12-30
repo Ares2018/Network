@@ -6,6 +6,6 @@ package com.aliya.core.test;
  * @author a_liYa
  * @date 2017/12/29 20:58.
  */
-public class TypeImplImpl extends TypeImpl{
+public class AbsTypeImpl extends AbsType {
 
 }

@@ -1,6 +1,7 @@
 package com.core.network.api;
 
 import com.core.network.cache.CachePolicy;
+import com.core.network.callback.ApiCallback;
 
 /**
  * Api task
@@ -17,6 +18,8 @@ public interface ApiTask {
     void onSetupParams(Object... params);
 
     String getApi();
+
+    <T> ApiCallback<T> getCallback();
 
     ApiTask put(String key, Object value);
 

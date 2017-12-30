@@ -12,12 +12,12 @@ import com.core.network.callback.ApiCallback;
  * @author a_liYa
  * @date 2017/12/26 21:42.
  */
-public abstract class BaseTask<T> implements ApiTask {
+public abstract class BaseTask implements ApiTask {
 
     private Object[] mParams;
     private AgentTask mAgentTask;
 
-    public BaseTask(ApiCallback<T> callback, ApiType type) {
+    public <T> BaseTask(ApiCallback<T> callback, ApiType type) {
         mAgentTask = new AgentTask(this, callback, type);
     }
 
@@ -69,6 +69,11 @@ public abstract class BaseTask<T> implements ApiTask {
     public ApiTask setCachePolicy(CachePolicy policy) {
         mAgentTask.setCachePolicy(policy);
         return this;
+    }
+
+    @Override
+    public <T> ApiCallback<T> getCallback() {
+        return mAgentTask.getCallback();
     }
 
     protected void onPreExecute() {

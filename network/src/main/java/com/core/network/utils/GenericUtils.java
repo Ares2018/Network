@@ -21,9 +21,15 @@ public final class GenericUtils {
      */
     public static @Nullable Type getGenericType(Class clazz) {
         while (clazz != Object.class) {
-            Type t = clazz.getGenericSuperclass();
-            if (t instanceof ParameterizedType) {
-                Type[] args = ((ParameterizedType) t).getActualTypeArguments();
+            Type type;
+            Type[] interfaces = clazz.getGenericInterfaces();
+            if (interfaces != null && interfaces.length > 0) { // 接口上明确泛型
+                type = interfaces[0];
+            } else { // 类/抽象类上明确泛型
+                type = clazz.getGenericSuperclass();
+            }
+            if (type instanceof ParameterizedType) {
+                Type[] args = ((ParameterizedType) type).getActualTypeArguments();
                 if (args[0] instanceof Class) {
                     return args[0];
                 } else if (args[0] instanceof ParameterizedType) {

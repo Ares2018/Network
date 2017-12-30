@@ -90,6 +90,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         mCachePolicy = policy;
     }
 
+    public ApiCallback<T> getCallback() {
+        return mCallback;
+    }
+
     /**
      * 请求执行操作
      */
