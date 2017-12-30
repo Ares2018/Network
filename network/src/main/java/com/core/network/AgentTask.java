@@ -179,7 +179,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理成功
     @Override
     public void onSuccess(final T result) {
-        if (mCallback == null) return;
+        if (mCallback == null) {
+            ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+            return;
+        }
         checkExeTime();
         runInMainThread(new Runnable() {
             @Override
@@ -192,7 +195,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理取消
     @Override
     public void onCancel() {
-        if (mCallback == null) return;
+        if (mCallback == null) {
+            ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+            return;
+        }
         runInMainThread(new Runnable() {
             @Override
             public void run() {
@@ -204,7 +210,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理失败
     @Override
     public void onError(final int errCode, final String msg) {
-        if (mCallback == null) return;
+        if (mCallback == null) {
+            ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+            return;
+        }
         checkExeTime();
         runInMainThread(new Runnable() {
             @Override
