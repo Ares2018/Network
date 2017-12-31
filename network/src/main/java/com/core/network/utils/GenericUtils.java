@@ -23,9 +23,9 @@ public final class GenericUtils {
         while (clazz != Object.class) {
             Type type;
             Type[] interfaces = clazz.getGenericInterfaces();
-            if (interfaces != null && interfaces.length > 0) { // 接口上明确泛型
+            if (interfaces != null && interfaces.length > 0) { // 接口上的实际类型参数
                 type = interfaces[0];
-            } else { // 类/抽象类上明确泛型
+            } else { // 类/抽象类上的实际类型参数
                 type = clazz.getGenericSuperclass();
             }
             if (type instanceof ParameterizedType) {
