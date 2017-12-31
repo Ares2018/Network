@@ -3,6 +3,8 @@ package com.core.network;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,7 +27,9 @@ public class ApiManager {
 
     private static Context sContext;
     private static OkHttpClient sClient;
+    private static boolean sDebuggable;
 
+    public static final String LOG_TAG = "API_LOG";
     public static final int CACHE_TIME = 3600 * 24 * 30; // 缓存时间 单位：秒；默认30天
     public static final int CACHE_MAX_SIZE = 10 * 1024 * 1024; // 缓存大小；默认10M
 
@@ -35,6 +39,12 @@ public class ApiManager {
             if (sContext instanceof Application) {
                 ((Application) sContext)
                         .registerActivityLifecycleCallbacks(new LifecycleCallbacks());
+            }
+            try {
+                sDebuggable = (sContext.getPackageManager()
+                        .getPackageInfo(sContext.getPackageName(), PackageManager.GET_ACTIVITIES)
+                        .applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+            } catch (Exception e) {
             }
         }
     }
@@ -91,6 +101,10 @@ public class ApiManager {
         NetworkInfo networkInfo = ((ConnectivityManager)
                 sContext.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    public static boolean isDebuggable() {
+        return sDebuggable;
     }
 
     static class LifecycleCallbacks implements Application.ActivityLifecycleCallbacks {

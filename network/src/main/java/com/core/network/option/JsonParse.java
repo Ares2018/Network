@@ -10,6 +10,6 @@ import java.lang.reflect.Type;
  */
 public interface JsonParse {
 
-    <T> T onJsonParse(String text, Type type);
+    <T> T onJsonParse(String text, Type typeOf);
 
 }

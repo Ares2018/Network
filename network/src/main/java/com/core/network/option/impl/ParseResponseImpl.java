@@ -1,6 +1,7 @@
 package com.core.network.option.impl;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.core.network.ApiManager;
 import com.core.network.api.ApiTask;
@@ -44,16 +45,18 @@ public class ParseResponseImpl implements ParseResponse {
         T data = null;
         ApiCallback<T> apiCallback = apiTask.getCallback();
         if (apiCallback != null) {
-            Type type = GenericUtils.getGenericType(apiCallback.getClass());
-            if (type == null) {
+            Type typeOf = GenericUtils.getGenericType(apiCallback.getClass());
+            if (typeOf == null) {
                 data = null; // 泛型未声明或者不合法
-//                throw new IllegalArgumentException(getClass().getName() + "泛型未声明或者不合法");
-            } else if (type == Void.class) {
+                if (ApiManager.isDebuggable()) {
+                    Log.e(ApiManager.LOG_TAG, apiCallback.getClass().getName() + "类型参数未声明");
+                }
+            } else if (typeOf == Void.class) {
                 data = null;
-            } else if (type == String.class) {
+            } else if (typeOf == String.class) {
                 data = (T) body;
             } else {
-                data = ApiManager.getApiConfig().getJsonParse().onJsonParse(body, type);
+                data = ApiManager.getApiConfig().getJsonParse().onJsonParse(body, typeOf);
             }
         }
         callback.onSuccess(data);
