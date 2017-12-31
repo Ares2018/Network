@@ -19,9 +19,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ApiManager.init(this, null, ApiConfig.newBuilder()
+        ApiManager.init(this, ApiConfig.newBuilder()
                 .urlTransform(new AppUrlTransform())
                 .addApiPreFilter(new AppApiPreFilter())
                 .jsonParse(new AppJsonParse()));
     }
+
 }

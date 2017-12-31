@@ -1,6 +1,7 @@
 package com.aliya.core;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -11,11 +12,13 @@ import com.core.network.callback.ApiCallback;
 public class MainActivity extends AppCompatActivity {
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        long millis = SystemClock.uptimeMillis();
         new QRCodeTask(new ApiCallback<QREntity>() {
             @Override
             public void onCancel() {
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("TAG", "onSuccess " + data);
             }
         }).setTag(this).exe();
+        Log.e("TAG", "task 耗时 " + (SystemClock.uptimeMillis() - millis));
     }
 
 }

@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import com.core.network.api.ApiPreFilter;
 import com.core.network.option.ExceptionTransform;
 import com.core.network.option.JsonParse;
+import com.core.network.option.LazyClientLoader;
 import com.core.network.option.ParseResponse;
 import com.core.network.option.UrlTransform;
 import com.core.network.option.impl.ExceptionTransformImpl;
+import com.core.network.option.impl.LazyClientLoaderImpl;
 import com.core.network.option.impl.ParseResponseImpl;
 import com.core.network.option.impl.UrlTransformImpl;
 
@@ -32,28 +34,40 @@ public class ApiConfig {
     private List<ApiPreFilter> mApiPreFilters;
     private ExceptionTransform mExceptionTransform;
 
+    private LazyClientLoader mLazyClientLoader;
+
     public int getCacheTime() {
         return mCacheTime;
     }
 
-    public @NonNull ParseResponse getParseResponse() {
+    @NonNull
+    public ParseResponse getParseResponse() {
         return mParseResponse;
     }
 
-    public @NonNull UrlTransform getUrlTransform() {
+    @NonNull
+    public UrlTransform getUrlTransform() {
         return mUrlTransform;
     }
 
-    public @NonNull ExceptionTransform getExceptionTransform() {
+    @NonNull
+    public ExceptionTransform getExceptionTransform() {
         return mExceptionTransform;
     }
 
-    public @Nullable List<ApiPreFilter> getApiPreFilters() {
+    @Nullable
+    public List<ApiPreFilter> getApiPreFilters() {
         return mApiPreFilters;
     }
 
-    public @NonNull JsonParse getJsonParse() {
+    @NonNull
+    public JsonParse getJsonParse() {
         return mJsonParse;
+    }
+
+    @NonNull
+    public LazyClientLoader getLazyClientLoader() {
+        return mLazyClientLoader;
     }
 
     private ApiConfig(Builder builder) {
@@ -83,6 +97,11 @@ public class ApiConfig {
         } else {
             mJsonParse = builder.jsonParse;
         }
+        if (null == builder.lazyClientLoader) {
+            mLazyClientLoader = new LazyClientLoaderImpl();
+        } else {
+            mLazyClientLoader = builder.lazyClientLoader;
+        }
         mApiPreFilters = builder.apiPreFilters;
     }
 
@@ -99,6 +118,8 @@ public class ApiConfig {
         private ExceptionTransform exceptionTransform;
         private List<ApiPreFilter> apiPreFilters;
         private JsonParse jsonParse;
+
+        private LazyClientLoader lazyClientLoader;
 
         private Builder() {
         }
@@ -135,6 +156,11 @@ public class ApiConfig {
                 }
                 apiPreFilters.add(filter);
             }
+            return this;
+        }
+
+        public Builder lazyClientLoader(LazyClientLoader lazyClientLoader) {
+            this.lazyClientLoader = lazyClientLoader;
             return this;
         }
 

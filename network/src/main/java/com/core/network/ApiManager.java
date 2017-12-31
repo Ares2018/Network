@@ -8,13 +8,13 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.MessageQueue;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.core.network.cache.CacheInterceptor;
-import com.core.network.okhttp.SSLSocketManager;
 
-import java.io.File;
-
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 /**
@@ -36,14 +36,13 @@ public class ApiManager {
      * 初始化
      *
      * @param context Context
-     * @see #init(Context, OkHttpClient.Builder, ApiConfig.Builder)
+     * @see #init(Context, ApiConfig.Builder)
      */
     public static void init(Context context) {
-        init(context, null, null);
+        init(context, null);
     }
 
-    public static void init(Context context, OkHttpClient.Builder clientBuilder,
-                            ApiConfig.Builder configBuilder) {
+    public static void init(Context context, ApiConfig.Builder configBuilder) {
         if (context != null && sContext == null) {
             sContext = context.getApplicationContext();
             if (sContext instanceof Application) {
@@ -57,28 +56,30 @@ public class ApiManager {
             } catch (Exception e) {
             }
         }
-        if (clientBuilder != null && sHttpClient == null) {
-            sHttpClient = clientBuilder
-                    .addInterceptor(new CacheInterceptor())
-                    .build();
-        }
         if (configBuilder != null && sApiConfig == null) {
             sApiConfig = configBuilder.build();
         }
+        Log.e("TAG", "addIdleHandler " + SystemClock.uptimeMillis());
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+            @Override
+            public boolean queueIdle() {
+                long l = SystemClock.uptimeMillis();
+                Log.e("TAG", "queueIdle " + l);
+                getClient();
+                Log.e("TAG", "queueIdle 耗时: " + (SystemClock.uptimeMillis() - l));
+                return false;
+            }
+        });
     }
 
     public static OkHttpClient getClient() {
         if (sHttpClient == null) {
             synchronized (ApiManager.class) {
-                SSLSocketManager sslSM = new SSLSocketManager();
-                sHttpClient = new OkHttpClient.Builder()
-                        .retryOnConnectionFailure(true)
-                        .sslSocketFactory(sslSM.getSSLSocketFactory(), sslSM.getX509TrustManager())
-                        .hostnameVerifier(sslSM.getHostnameVerifier())
-                        .cache(new Cache(
-                                new File(sContext.getCacheDir(), "HttpCache"), 10 * 1024 * 1024))
-                        .addInterceptor(new CacheInterceptor())
-                        .build();
+                if (sHttpClient == null && sApiConfig != null) {
+                    sHttpClient = sApiConfig.getLazyClientLoader().newBuilder()
+                            .addInterceptor(new CacheInterceptor())
+                            .build();
+                }
             }
         }
         return sHttpClient;
@@ -105,6 +106,10 @@ public class ApiManager {
         NetworkInfo networkInfo = ((ConnectivityManager)
                 sContext.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    public static Context getContext() {
+        return sContext;
     }
 
     public static boolean isDebuggable() {
