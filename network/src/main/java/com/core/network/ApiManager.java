@@ -26,15 +26,25 @@ import okhttp3.OkHttpClient;
 public class ApiManager {
 
     private static Context sContext;
-    private static OkHttpClient sClient;
     private static boolean sDebuggable;
+    private static ApiConfig sApiConfig;
+    private static OkHttpClient sHttpClient;
 
     public static final String LOG_TAG = "API_LOG";
-    public static final int CACHE_TIME = 3600 * 24 * 30; // 缓存时间 单位：秒；默认30天
-    public static final int CACHE_MAX_SIZE = 10 * 1024 * 1024; // 缓存大小；默认10M
 
-    public static void setContext(Context context) {
-        if (context != null) {
+    /**
+     * 初始化
+     *
+     * @param context Context
+     * @see #init(Context, OkHttpClient.Builder, ApiConfig.Builder)
+     */
+    public static void init(Context context) {
+        init(context, null, null);
+    }
+
+    public static void init(Context context, OkHttpClient.Builder clientBuilder,
+                            ApiConfig.Builder configBuilder) {
+        if (context != null && sContext == null) {
             sContext = context.getApplicationContext();
             if (sContext instanceof Application) {
                 ((Application) sContext)
@@ -47,37 +57,31 @@ public class ApiManager {
             } catch (Exception e) {
             }
         }
-    }
-
-    public static void clientBuild(OkHttpClient.Builder builder) {
-        if (builder != null) {
-            sClient = builder
+        if (clientBuilder != null && sHttpClient == null) {
+            sHttpClient = clientBuilder
                     .addInterceptor(new CacheInterceptor())
                     .build();
+        }
+        if (configBuilder != null && sApiConfig == null) {
+            sApiConfig = configBuilder.build();
         }
     }
 
     public static OkHttpClient getClient() {
-        if (sClient == null) {
+        if (sHttpClient == null) {
             synchronized (ApiManager.class) {
                 SSLSocketManager sslSM = new SSLSocketManager();
-                sClient = new OkHttpClient.Builder()
+                sHttpClient = new OkHttpClient.Builder()
                         .retryOnConnectionFailure(true)
                         .sslSocketFactory(sslSM.getSSLSocketFactory(), sslSM.getX509TrustManager())
                         .hostnameVerifier(sslSM.getHostnameVerifier())
                         .cache(new Cache(
-                                new File(sContext.getCacheDir(), "HttpCache"), CACHE_MAX_SIZE))
+                                new File(sContext.getCacheDir(), "HttpCache"), 10 * 1024 * 1024))
                         .addInterceptor(new CacheInterceptor())
                         .build();
             }
         }
-        return sClient;
-    }
-
-    private static ApiConfig sApiConfig;
-
-    public static void configBuild(ApiConfig.Builder builder) {
-        sApiConfig = builder.build();
+        return sHttpClient;
     }
 
     public static ApiConfig getApiConfig() {

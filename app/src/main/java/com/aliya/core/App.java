@@ -19,12 +19,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ApiManager.setContext(this);
-        ApiManager.configBuild(
-                ApiConfig.newBuilder()
-                        .urlTransform(new AppUrlTransform())
-                        .addApiPreFilter(new AppApiPreFilter())
-                        .jsonParse(new AppJsonParse())
-        );
+        ApiManager.init(this, null, ApiConfig.newBuilder()
+                .urlTransform(new AppUrlTransform())
+                .addApiPreFilter(new AppApiPreFilter())
+                .jsonParse(new AppJsonParse()));
     }
 }

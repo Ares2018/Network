@@ -24,11 +24,17 @@ import java.util.List;
  */
 public class ApiConfig {
 
+    private int mCacheTime; // 缓存时间 单位:秒
+
     private JsonParse mJsonParse;
     private UrlTransform mUrlTransform;
     private ParseResponse mParseResponse;
     private List<ApiPreFilter> mApiPreFilters;
     private ExceptionTransform mExceptionTransform;
+
+    public int getCacheTime() {
+        return mCacheTime;
+    }
 
     public @NonNull ParseResponse getParseResponse() {
         return mParseResponse;
@@ -51,6 +57,7 @@ public class ApiConfig {
     }
 
     private ApiConfig(Builder builder) {
+        mCacheTime = builder.cacheTime;
         if (null == builder.urlTransform) {
             mUrlTransform = new UrlTransformImpl();
         } else {
@@ -84,6 +91,9 @@ public class ApiConfig {
     }
 
     public static final class Builder {
+
+        private int cacheTime = 3600 * 24 * 30; // 默认30天
+
         private ParseResponse parseResponse;
         private UrlTransform urlTransform;
         private ExceptionTransform exceptionTransform;
@@ -91,6 +101,11 @@ public class ApiConfig {
         private JsonParse jsonParse;
 
         private Builder() {
+        }
+
+        public Builder cacheTime(int cacheTime) {
+            this.cacheTime = cacheTime;
+            return this;
         }
 
         public Builder parseResponse(ParseResponse parseResponse) {

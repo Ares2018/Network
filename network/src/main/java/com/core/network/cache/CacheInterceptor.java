@@ -2,6 +2,7 @@ package com.core.network.cache;
 
 import android.text.TextUtils;
 
+import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
 
 import java.io.IOException;
@@ -29,7 +30,8 @@ public class CacheInterceptor implements Interceptor {
             cachePolicy = CachePolicy.defaultValue();
         }
 
-        int maxAge = ApiManager.CACHE_TIME;
+        ApiConfig apiConfig = ApiManager.getApiConfig();
+        int maxAge = apiConfig.getCacheTime();
         String headerMaxAge = request.header(CachePolicy.maxAgeKey());
         if (!TextUtils.isEmpty(headerMaxAge)) {
             try {
@@ -57,7 +59,7 @@ public class CacheInterceptor implements Interceptor {
             request = request.newBuilder()
                     .removeHeader(CachePolicy.headerKey())
                     .removeHeader(CachePolicy.maxAgeKey())
-                    .cacheControl(maxAge == ApiManager.CACHE_TIME ? DEFAULT_CACHE :
+                    .cacheControl(maxAge == apiConfig.getCacheTime() ? defaultCache() :
                             new CacheControl.Builder().maxStale(maxAge, TimeUnit.SECONDS).build())
                     .build();
         }
@@ -73,9 +75,21 @@ public class CacheInterceptor implements Interceptor {
         return response;
     }
 
+    private static CacheControl sCacheControl;
+
     /**
      * 缓存数据 - 指定有效期
      */
-    private static final CacheControl DEFAULT_CACHE =
-            new CacheControl.Builder().maxStale(ApiManager.CACHE_TIME, TimeUnit.SECONDS).build();
+    private static final CacheControl defaultCache() {
+        if (sCacheControl == null) {
+            synchronized (CacheInterceptor.class) {
+                if (sCacheControl == null) {
+                    sCacheControl = new CacheControl.Builder()
+                            .maxStale(ApiManager.getApiConfig().getCacheTime(), TimeUnit.SECONDS)
+                            .build();
+                }
+            }
+        }
+        return sCacheControl;
+    }
 }
