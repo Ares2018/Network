@@ -8,10 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.MessageQueue;
-import android.os.SystemClock;
-import android.util.Log;
 
 import com.core.network.cache.CacheInterceptor;
 
@@ -42,6 +38,12 @@ public class ApiManager {
         init(context, null);
     }
 
+    /**
+     * 初始化
+     *
+     * @param context       Context
+     * @param configBuilder Api相关配置操作
+     */
     public static void init(Context context, ApiConfig.Builder configBuilder) {
         if (context != null && sContext == null) {
             sContext = context.getApplicationContext();
@@ -59,17 +61,6 @@ public class ApiManager {
         if (configBuilder != null && sApiConfig == null) {
             sApiConfig = configBuilder.build();
         }
-        Log.e("TAG", "addIdleHandler " + SystemClock.uptimeMillis());
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-            @Override
-            public boolean queueIdle() {
-                long l = SystemClock.uptimeMillis();
-                Log.e("TAG", "queueIdle " + l);
-                getClient();
-                Log.e("TAG", "queueIdle 耗时: " + (SystemClock.uptimeMillis() - l));
-                return false;
-            }
-        });
     }
 
     public static OkHttpClient getClient() {

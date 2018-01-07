@@ -7,10 +7,11 @@ import android.util.Log;
 
 import com.aliya.core.entity.QREntity;
 import com.aliya.core.task.QRCodeTask;
+import com.core.network.api.ApiLoadingPage;
+import com.core.network.api.ApiTask;
 import com.core.network.callback.ApiCallback;
 
 public class MainActivity extends AppCompatActivity {
-
 
 
     @Override
@@ -34,7 +35,32 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(QREntity data) {
                 Log.e("TAG", "onSuccess " + data);
             }
-        }).setTag(this).exe();
+        }).setTag(this).setLoadingPage(new ApiLoadingPage() {
+            @Override
+            public void setApiTask(ApiTask task) {
+                Log.e("TAG", "setApiTask " + task);
+            }
+
+            @Override
+            public void onStart() {
+                Log.e("TAG", "onStart()");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("TAG", "onCancel()");
+            }
+
+            @Override
+            public void onError(String errMsg, int errCode) {
+                Log.e("TAG", "onError(" + errMsg + ", " + errCode + ")");
+            }
+
+            @Override
+            public void onSuccess(Object data) {
+                Log.e("TAG", "onSuccess(" + data + ")");
+            }
+        }).exe();
         Log.e("TAG", "task 耗时 " + (SystemClock.uptimeMillis() - millis));
     }
 

@@ -1,8 +1,10 @@
 package com.core.network;
 
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 
 import com.core.network.api.ApiCall;
+import com.core.network.api.ApiLoadingPage;
 import com.core.network.api.ApiPreFilter;
 import com.core.network.api.ApiTask;
 import com.core.network.api.ApiType;
@@ -47,12 +49,13 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     private ApiType mApiType;
     private ApiTask mApiTask;
     private ApiCall mTaskCall;
+    private ApiLoadingPage mLoadingPage;
 
     private CachePolicy mCachePolicy;
     private long mStartMs; // 开始的时间 单位：毫秒
     private long mShortestMs; // 返回的最短时间 单位：毫秒
 
-    public AgentTask(ApiTask apiTask, ApiCallback<T> callback, ApiType type) {
+    public AgentTask(@NonNull ApiTask apiTask, ApiCallback<T> callback, ApiType type) {
         this.mApiTask = apiTask;
         this.mCallback = callback;
         this.mApiType = (type == null) ? ApiType.GET : type;
@@ -99,6 +102,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
      */
     public ApiCall doTask() {
         mStartMs = SystemClock.uptimeMillis();
+
+        if (mLoadingPage != null) mLoadingPage.onStart();
 
         List<ApiPreFilter> preFilters = ApiManager.getApiConfig().getApiPreFilters();
         boolean filterResult = false;
@@ -149,6 +154,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             mTaskCall.setCall(call);
             ApiCallManager.get().addCall(mTag, mTaskCall);
         }
+
         return mTaskCall;
     }
 
@@ -179,7 +185,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理成功
     @Override
     public void onSuccess(final T result) {
-        if (mCallback == null) {
+        if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
             return;
         }
@@ -188,6 +194,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackSuccess(result);
+                if (mLoadingPage != null) {
+                    mLoadingPage.onSuccess(result);
+                }
             }
         });
     }
@@ -195,7 +204,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理取消
     @Override
     public void onCancel() {
-        if (mCallback == null) {
+        if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
             return;
         }
@@ -203,6 +212,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackCancel();
+                if (mLoadingPage != null) {
+                    mLoadingPage.onCancel();
+                }
             }
         });
     }
@@ -210,7 +222,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理失败
     @Override
     public void onError(final int errCode, final String msg) {
-        if (mCallback == null) {
+        if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
             return;
         }
@@ -219,6 +231,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackError(errCode, msg);
+                if (mLoadingPage != null) {
+                    mLoadingPage.onError(msg, errCode);
+                }
             }
         });
     }
@@ -226,54 +241,39 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 回调撤消 - 主进程
     private void callbackCancel() {
         ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-//        if (mLoadViewHolder != null) {
-//            mLoadViewHolder.showFailed(APICode.CANCEL);
-//        }
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onBefore();
-        }
+
+        if (mCallback == null) return;
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onCancel();
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onAfter();
-        }
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
     }
 
     // 回调错误 - 主进程
     private void callbackError(int errCode, String msg) {
-        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         if (mTaskCall != null && mTaskCall.isCanceled()) {
             callbackCancel();
             return;
         }
-//        if (mLoadViewHolder != null) {
-//            mLoadViewHolder.showFailed(errCode);
-//        }
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onBefore();
-        }
+        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+
+        if (mCallback == null) return;
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onError(msg, errCode);
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onAfter();
-        }
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
     }
 
     // 回调成功
     private void callbackSuccess(T result) {
-        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         if (mTaskCall != null && mTaskCall.isCanceled()) {
             callbackCancel();
             return;
         }
-//        if (mLoadViewHolder != null) {
-//            mLoadViewHolder.finishLoad();
-//        }
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onBefore();
-        }
+        ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+
+        if (mCallback == null) return;
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onSuccess(result);
-        if (mCallback instanceof ApiProCallback) {
-            ((ApiProCallback) mCallback).onAfter();
-        }
+        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
     }
 
     // 检查执行时间，如果少于最短时间，则该子线程睡眠
@@ -286,6 +286,13 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void setLoadingPage(ApiLoadingPage loadingPage) {
+        if (loadingPage != null) {
+            mLoadingPage = loadingPage;
+            mLoadingPage.setApiTask(mApiTask);
         }
     }
 

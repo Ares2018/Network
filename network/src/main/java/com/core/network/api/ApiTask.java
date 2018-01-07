@@ -31,4 +31,6 @@ public interface ApiTask {
 
     ApiTask setCachePolicy(CachePolicy policy);
 
+    ApiTask setLoadingPage(ApiLoadingPage loadingPage);
+
 }

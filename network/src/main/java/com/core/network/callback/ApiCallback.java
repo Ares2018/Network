@@ -1,5 +1,7 @@
 package com.core.network.callback;
 
+import android.support.annotation.MainThread;
+
 /**
  * Api接口回调
  *
@@ -12,11 +14,13 @@ public interface ApiCallback<T> {
     /**
      * 取消
      */
+    @MainThread
     void onCancel();
 
     /**
      * 加载失败
      */
+    @MainThread
     void onError(String errMsg, int errCode);
 
     /**
@@ -24,6 +28,7 @@ public interface ApiCallback<T> {
      *
      * @param data 从网络获取的数据
      */
+    @MainThread
     void onSuccess(T data);
 
 }

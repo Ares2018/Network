@@ -1,6 +1,7 @@
 package com.core.network;
 
 import com.core.network.api.ApiCall;
+import com.core.network.api.ApiLoadingPage;
 import com.core.network.api.ApiTask;
 import com.core.network.api.ApiType;
 import com.core.network.cache.CachePolicy;
@@ -68,6 +69,12 @@ public abstract class BaseTask implements ApiTask {
     @Override
     public ApiTask setCachePolicy(CachePolicy policy) {
         mAgentTask.setCachePolicy(policy);
+        return this;
+    }
+
+    @Override
+    public ApiTask setLoadingPage(ApiLoadingPage loadingPage) {
+        mAgentTask.setLoadingPage(loadingPage);
         return this;
     }
 
