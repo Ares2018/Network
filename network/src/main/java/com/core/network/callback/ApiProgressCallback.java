@@ -1,6 +1,7 @@
 package com.core.network.callback;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.WorkerThread;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,6 +45,7 @@ public interface ApiProgressCallback {
      * @param contentLength 总bytes
      * @param state         {@link ProgressState}
      */
+    @WorkerThread
     void onProgress(long bytesRead, long contentLength, @ProgressState int state);
 
     @IntDef(flag = true, value = {

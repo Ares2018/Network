@@ -1,5 +1,7 @@
 package com.core.network.callback;
 
+import android.support.annotation.MainThread;
+
 /**
  * ApiCallback 拓展类
  *
@@ -8,7 +10,9 @@ package com.core.network.callback;
  */
 public interface ApiProCallback extends ApiCallback {
 
+    @MainThread
     void onBefore();
 
+    @MainThread
     void onAfter();
 }

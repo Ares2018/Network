@@ -194,9 +194,6 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackSuccess(result);
-                if (mLoadingPage != null) {
-                    mLoadingPage.onSuccess(result);
-                }
             }
         });
     }
@@ -212,9 +209,6 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackCancel();
-                if (mLoadingPage != null) {
-                    mLoadingPage.onCancel();
-                }
             }
         });
     }
@@ -231,9 +225,6 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             @Override
             public void run() {
                 callbackError(errCode, msg);
-                if (mLoadingPage != null) {
-                    mLoadingPage.onError(msg, errCode);
-                }
             }
         });
     }
@@ -241,7 +232,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 回调撤消 - 主进程
     private void callbackCancel() {
         ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-
+        if (mLoadingPage != null) {
+            mLoadingPage.onCancel();
+        }
         if (mCallback == null) return;
         if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onCancel();
@@ -255,7 +248,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             return;
         }
         ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-
+        if (mLoadingPage != null) {
+            mLoadingPage.onError(msg, errCode);
+        }
         if (mCallback == null) return;
         if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onError(msg, errCode);
@@ -269,7 +264,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             return;
         }
         ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-
+        if (mLoadingPage != null) {
+            mLoadingPage.onSuccess(result);
+        }
         if (mCallback == null) return;
         if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
         mCallback.onSuccess(result);
