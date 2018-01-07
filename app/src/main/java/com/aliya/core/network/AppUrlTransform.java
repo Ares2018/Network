@@ -19,7 +19,7 @@ public class AppUrlTransform implements UrlTransform {
     }
 
     private String getBaseUrl() {
-        return "http://apis.juhe.cn";
+        return "https://apibeta.8531.cn";
     }
 
 }
