@@ -1,2 +1,3 @@
-# CoreBase
-常用基类
+# Network
+
+网络相关组件的封装
