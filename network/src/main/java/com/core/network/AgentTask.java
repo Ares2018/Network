@@ -257,7 +257,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
     }
 
-    // 回调成功
+    // 回调成功 - 主进程
     private void callbackSuccess(T result) {
         if (mTaskCall != null && mTaskCall.isCanceled()) {
             callbackCancel();
