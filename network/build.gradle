@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'bintray-release'
 
 android {
     compileSdkVersion 26
@@ -7,8 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
-
+        versionName "0.0.1"
     }
 
     buildTypes {
@@ -20,10 +20,20 @@ android {
 
 }
 
+publish {
+    userOrg = "a-liya" // bintray.com 用户名
+    groupId = "com.aliya" // jcenter上的路径
+    artifactId = "network"
+    publishVersion = "0.0.1" // 版本号
+    desc = "Android 网络请求封装"
+    website = "https://github.com/a-liYa/Network"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     compileOnly 'com.android.support:appcompat-v7:26.1.0'
     compileOnly 'com.squareup.okhttp3:okhttp:3.9.1'
+    
 
 }
