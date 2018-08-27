@@ -29,6 +29,8 @@ public final class HandlerUtils {
 
     /**
      * 获取主线程的handler
+     *
+     * @return handler
      */
     public static Handler getHandler() {
         if (sMainHandler == null) {
@@ -43,6 +45,8 @@ public final class HandlerUtils {
 
     /**
      * 判断当前的线程是不是在主线程
+     *
+     * @return true : 主线程
      */
     public static boolean isRunInMainThread() {
         return Looper.getMainLooper().getThread() == Thread.currentThread();

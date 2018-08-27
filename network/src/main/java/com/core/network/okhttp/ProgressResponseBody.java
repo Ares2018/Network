@@ -56,7 +56,6 @@ public class ProgressResponseBody extends ResponseBody {
      * 重写调用实际的响应体的contentLength
      *
      * @return contentLength
-     * @throws IOException 异常
      */
     @Override
     public long contentLength() {
@@ -67,7 +66,6 @@ public class ProgressResponseBody extends ResponseBody {
      * 重写进行包装source
      *
      * @return BufferedSource
-     * @throws IOException 异常
      */
     @Override
     public BufferedSource source() {

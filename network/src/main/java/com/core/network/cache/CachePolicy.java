@@ -13,9 +13,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 public final class CachePolicy {
 
-    /**
-     * 默认值
-     */
     public static final String defaultValue() {
         return CACHE_NO_NETWORK;
     }
@@ -24,6 +21,8 @@ public final class CachePolicy {
 
     /**
      * The key of the header
+     *
+     * @return string
      */
     public static final String headerKey() {
         return HEADER_NAME;
@@ -31,6 +30,8 @@ public final class CachePolicy {
 
     /**
      * The key of the max age
+     *
+     * @return string
      */
     public static final String maxAgeKey() {
         return "max-age";

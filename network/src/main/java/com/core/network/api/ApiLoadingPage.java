@@ -28,6 +28,9 @@ public interface ApiLoadingPage {
 
     /**
      * 加载失败
+     *
+     * @param errMsg  .
+     * @param errCode .
      */
     @MainThread
     void onError(String errMsg, int errCode);

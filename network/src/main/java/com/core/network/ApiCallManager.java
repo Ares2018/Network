@@ -29,7 +29,7 @@ public class ApiCallManager {
      * <p>
      * 单例 - 懒汉式
      *
-     * @return
+     * @return 实例
      */
     public static ApiCallManager get() {
         if (mInstance == null) {
