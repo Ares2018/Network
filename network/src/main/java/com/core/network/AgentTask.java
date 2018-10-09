@@ -158,25 +158,19 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         return mTaskCall;
     }
 
+    // from OkHttp CallBack
     @Override
     public void onFailure(Call call, IOException e) {
-        if (mCallback != null) {
-            if (call.isCanceled()) {
-                onCancel();
-            } else {
-                ApiManager.getApiConfig()
-                        .getExceptionTransform().onExceptionTransform(e, this);
-            }
-        } else {
-            ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
+        if (!ifHandleCancel(call)) {
+            ApiManager.getApiConfig()
+                    .getExceptionTransform().onExceptionTransform(e, this);
         }
     }
 
+    // from OkHttp CallBack
     @Override
     public void onResponse(Call call, Response response) throws IOException {
-        if (call != null && call.isCanceled()) {
-            onCancel();
-        } else {
+        if (!ifHandleCancel(call)) {
             ApiManager.getApiConfig()
                     .getParseResponse().onParseResponse(response, this, mApiTask);
         }
@@ -187,15 +181,15 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     public void onSuccess(final T result) {
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-            return;
+        } else {
+            checkExeTime();
+            runInMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    callbackSuccess(result);
+                }
+            });
         }
-        checkExeTime();
-        runInMainThread(new Runnable() {
-            @Override
-            public void run() {
-                callbackSuccess(result);
-            }
-        });
     }
 
     // 处理取消
@@ -203,14 +197,14 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     public void onCancel() {
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-            return;
+        } else {
+            runInMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    callbackCancel();
+                }
+            });
         }
-        runInMainThread(new Runnable() {
-            @Override
-            public void run() {
-                callbackCancel();
-            }
-        });
     }
 
     // 处理失败
@@ -218,15 +212,15 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     public void onError(final int errCode, final String msg) {
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
-            return;
+        } else {
+            checkExeTime();
+            runInMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    callbackError(errCode, msg);
+                }
+            });
         }
-        checkExeTime();
-        runInMainThread(new Runnable() {
-            @Override
-            public void run() {
-                callbackError(errCode, msg);
-            }
-        });
     }
 
     // 回调撤消 - 主进程
@@ -235,10 +229,11 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (mLoadingPage != null) {
             mLoadingPage.onCancel();
         }
-        if (mCallback == null) return;
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
-        mCallback.onCancel();
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        if (mCallback != null) {
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
+            mCallback.onCancel();
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        }
     }
 
     // 回调错误 - 主进程
@@ -251,10 +246,11 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (mLoadingPage != null) {
             mLoadingPage.onError(msg, errCode);
         }
-        if (mCallback == null) return;
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
-        mCallback.onError(msg, errCode);
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        if (mCallback != null) {
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
+            mCallback.onError(msg, errCode);
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        }
     }
 
     // 回调成功 - 主进程
@@ -267,13 +263,14 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (mLoadingPage != null) {
             mLoadingPage.onSuccess(result);
         }
-        if (mCallback == null) return;
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
-        mCallback.onSuccess(result);
-        if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        if (mCallback != null) {
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onBefore();
+            mCallback.onSuccess(result);
+            if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
+        }
     }
 
-    // 检查执行时间，如果少于最短时间，则该子线程睡眠
+    // 检查执行时间，如果少于最短时间，则当前子线程睡眠
     private void checkExeTime() {
         // 执行时间
         long exeMs = SystemClock.uptimeMillis() - mStartMs;
@@ -291,6 +288,20 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             mLoadingPage = loadingPage;
             mLoadingPage.setApiTask(mApiTask);
         }
+    }
+
+    /**
+     * 是否处理 call cancel 逻辑
+     *
+     * @param call OkHttp call back.
+     * @return true 已处理
+     */
+    private boolean ifHandleCancel(Call call) {
+        if (call != null && call.isCanceled()) {
+            onCancel();
+            return true;
+        }
+        return false;
     }
 
 }

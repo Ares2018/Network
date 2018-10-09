@@ -25,21 +25,15 @@ public class ApiCall {
     }
 
     public void cancel() {
-        if (mCall != null)
-            mCall.cancel();
+        if (mCall != null) mCall.cancel();
     }
 
     public boolean isExecuted() {
-        if (mCall == null)
-            return false;
-
-        return mCall.isExecuted();
+        return mCall != null && mCall.isExecuted();
     }
 
     public boolean isCanceled() {
-        if (mCall == null)
-            return true;
-        return mCall.isCanceled();
+        return mCall == null || mCall.isCanceled();
     }
 
 }
