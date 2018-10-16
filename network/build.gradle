@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'bintray-release'
+apply from: 'http://10.100.62.98:8086/nexus/service/local/artifact/maven/redirect?r=releases&g=cn.daily.android&a=publish&e=gradle&v=0.0.4'
+//apply plugin: 'bintray-release'
 
 android {
     compileSdkVersion 26
@@ -20,14 +21,14 @@ android {
 
 }
 
-publish {
-    userOrg = "a-liya" // bintray.com 用户名
-    groupId = "com.aliya" // jcenter上的路径
-    artifactId = "network"
-    publishVersion = "0.0.1" // 版本号
-    desc = "Android 网络请求封装"
-    website = "https://github.com/a-liYa/Network"
-}
+//publish {
+//    userOrg = "a-liya" // bintray.com 用户名
+//    groupId = "com.aliya" // jcenter上的路径
+//    artifactId = "network"
+//    publishVersion = "0.0.1" // 版本号
+//    desc = "Android 网络请求封装"
+//    website = "https://github.com/a-liYa/Network"
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
