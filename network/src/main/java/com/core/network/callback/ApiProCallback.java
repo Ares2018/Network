@@ -8,7 +8,7 @@ import android.support.annotation.MainThread;
  * @author a_liYa
  * @date 2017/12/26 16:40.
  */
-public interface ApiProCallback extends ApiCallback {
+public interface ApiProCallback<T> extends ApiCallback<T> {
 
     @MainThread
     void onBefore();
