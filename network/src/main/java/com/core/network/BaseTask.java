@@ -5,6 +5,7 @@ import com.core.network.api.ApiLoadingPage;
 import com.core.network.api.ApiTask;
 import com.core.network.api.ApiType;
 import com.core.network.cache.CachePolicy;
+import com.core.network.callback.AgentCallback;
 import com.core.network.callback.ApiCallback;
 
 /**
@@ -81,6 +82,10 @@ public abstract class BaseTask implements ApiTask {
     @Override
     public <T> ApiCallback<T> getCallback() {
         return mAgentTask.getCallback();
+    }
+
+    public <T> AgentCallback<T> getAgentCallback() {
+        return mAgentTask;
     }
 
     protected void onPreExecute() {
