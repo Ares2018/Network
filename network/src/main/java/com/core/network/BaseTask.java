@@ -30,7 +30,15 @@ public abstract class BaseTask implements ApiTask {
 
         onSetupParams(params);
 
+        if (onInterruptExe(params)) {
+            return null;
+        }
+
         return mAgentTask.doTask();
+    }
+
+    protected boolean onInterruptExe(Object... params) {
+        return false;
     }
 
     @Override
