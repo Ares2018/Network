@@ -40,9 +40,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
 
     private ApiCallback<T> mCallback;
 
-    private Map<String, Object> mParamsMap; // 普通参数Map
-    private Map<String, String> mFilesMap; // 文件参数Map
-    private Map<String, Set<String>> mHeaders; // 请求头List
+    private Map<String, Object> mParamsMap;     // 普通参数Map
+    private Map<String, String> mFilesMap;      // 文件参数Map
+    private Map<String, Set<String>> mHeaders;  // 请求头List
 
     private Object mTag;
 
@@ -52,8 +52,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     private ApiLoadingPage mLoadingPage;
 
     private CachePolicy mCachePolicy;
-    private long mStartMs; // 开始的时间 单位：毫秒
-    private long mShortestMs; // 返回的最短时间 单位：毫秒
+    private long mStartMs;      // 开始的时间 单位：毫秒
+    private long mShortestMs;   // 返回的最短时间 单位：毫秒
 
     public AgentTask(@NonNull ApiTask apiTask, ApiCallback<T> callback, ApiType type) {
         this.mApiTask = apiTask;

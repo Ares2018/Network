@@ -1,5 +1,7 @@
 package com.core.network;
 
+import android.support.annotation.Nullable;
+
 import com.core.network.api.ApiCall;
 import com.core.network.api.ApiLoadingPage;
 import com.core.network.api.ApiTask;
@@ -24,7 +26,7 @@ public abstract class BaseTask implements ApiTask {
     }
 
     @Override
-    public ApiCall exe(Object... params) {
+    public @Nullable ApiCall exe(Object... params) {
         this.mParams = params;
         onPreExecute();
 
