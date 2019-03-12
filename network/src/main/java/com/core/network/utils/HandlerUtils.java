@@ -23,7 +23,7 @@ public final class HandlerUtils {
         if (isRunInMainThread()) {
             runnable.run();
         } else {
-            getHandler().post(runnable);
+            getMainHandler().post(runnable);
         }
     }
 
@@ -32,7 +32,7 @@ public final class HandlerUtils {
      *
      * @return handler
      */
-    public static Handler getHandler() {
+    public static Handler getMainHandler() {
         if (sMainHandler == null) {
             synchronized (HandlerUtils.class) {
                 if (sMainHandler == null) {
