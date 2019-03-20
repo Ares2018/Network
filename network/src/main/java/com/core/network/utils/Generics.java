@@ -11,7 +11,10 @@ import java.lang.reflect.Type;
  * @author a_liYa
  * @date 2017/9/28 16:19.
  */
-public final class GenericUtils {
+public final class Generics {
+
+    private Generics() {
+    }
 
     /**
      * 获取类申明的泛型

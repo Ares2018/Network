@@ -5,12 +5,10 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.aliya.core.entity.DataApi;
 import com.aliya.core.entity.QREntity;
-import com.aliya.core.entity.ReturnBean;
-import com.aliya.core.task.ApiInitTask;
-import com.aliya.core.task.QRCodeTask;
-import com.core.network.callback.ApiCallback;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,39 +20,50 @@ public class MainActivity extends AppCompatActivity {
 
         long millis = SystemClock.uptimeMillis();
 
-        new QRCodeTask(new ApiCallback<QREntity>() {
-            @Override
-            public void onCancel() {
-                Log.e("TAG", "onCancel ");
-            }
+        Class clazz = new LoadMore<QREntity>().;
 
-            @Override
-            public void onError(String errMsg, int errCode) {
-                Log.e("TAG", "onError " + errMsg + " - " + errCode);
-            }
+//        Type type1 = clazz.getGenericSuperclass();
+//        Type[] types = clazz.getGenericInterfaces();
+//        Class aClass = clazz.getComponentType();
+//
+//        Type type = Generics.getGenericType(clazz);
 
-            @Override
-            public void onSuccess(QREntity data) {
-                Log.e("TAG", "onSuccess " + data);
-            }
-        }).setTag(this).exe();
+        Log.e("TAG", "onCreate: " + clazz);
 
-        new ApiInitTask(new ApiCallback<ReturnBean<DataApi>>() {
-            @Override
-            public void onCancel() {
-                Log.e("TAG", "onCancel ");
-            }
 
-            @Override
-            public void onError(String errMsg, int errCode) {
-                Log.e("TAG", "onError " + errMsg + " - " + errCode);
-            }
-
-            @Override
-            public void onSuccess(ReturnBean<DataApi> data) {
-                Log.e("TAG", "onSuccess " + data);
-            }
-        }).exe();
+//        new QRCodeTask(new ApiCallback<QREntity>() {
+//            @Override
+//            public void onCancel() {
+//                Log.e("TAG", "onCancel ");
+//            }
+//
+//            @Override
+//            public void onError(String errMsg, int errCode) {
+//                Log.e("TAG", "onError " + errMsg + " - " + errCode);
+//            }
+//
+//            @Override
+//            public void onSuccess(QREntity data) {
+//                Log.e("TAG", "onSuccess " + data);
+//            }
+//        }).setTag(this).exe();
+//
+//        new ApiInitTask(new ApiCallback<ReturnBean<DataApi>>() {
+//            @Override
+//            public void onCancel() {
+//                Log.e("TAG", "onCancel ");
+//            }
+//
+//            @Override
+//            public void onError(String errMsg, int errCode) {
+//                Log.e("TAG", "onError " + errMsg + " - " + errCode);
+//            }
+//
+//            @Override
+//            public void onSuccess(ReturnBean<DataApi> data) {
+//                Log.e("TAG", "onSuccess " + data);
+//            }
+//        }).exe();
 
         Log.e("TAG", "task 耗时 " + (SystemClock.uptimeMillis() - millis));
     }

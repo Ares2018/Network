@@ -9,9 +9,12 @@ import android.os.Looper;
  * @author a_liYa
  * @date 2017/12/27 11:37.
  */
-public final class HandlerUtils {
+public final class Handlers {
 
     private static volatile Handler sMainHandler;
+
+    private Handlers() {
+    }
 
     /**
      * 在主线程中执行runnable
@@ -34,7 +37,7 @@ public final class HandlerUtils {
      */
     public static Handler getMainHandler() {
         if (sMainHandler == null) {
-            synchronized (HandlerUtils.class) {
+            synchronized (Handlers.class) {
                 if (sMainHandler == null) {
                     sMainHandler = new Handler(Looper.getMainLooper());
                 }

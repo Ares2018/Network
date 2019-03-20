@@ -8,7 +8,7 @@ import com.core.network.api.ApiTask;
 import com.core.network.callback.AgentCallback;
 import com.core.network.callback.ApiCallback;
 import com.core.network.option.ParseResponse;
-import com.core.network.utils.GenericUtils;
+import com.core.network.utils.Generics;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -45,7 +45,8 @@ public class ParseResponseImpl implements ParseResponse {
         T data = null;
         ApiCallback<T> apiCallback = apiTask.getCallback();
         if (apiCallback != null) {
-            Type typeOf = GenericUtils.getGenericType(apiCallback.getClass());
+            Type typeOf = Generics.getGenericType(apiCallback.getClass());
+
             if (typeOf == null) {
                 data = null; // 泛型未声明或者不合法
                 if (ApiManager.isDebuggable()) {

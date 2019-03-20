@@ -28,7 +28,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.core.network.utils.HandlerUtils.runInMainThread;
+import static com.core.network.utils.Handlers.runInMainThread;
 
 /**
  * 代理 Task
