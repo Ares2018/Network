@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.core.network.ApiManager;
+import com.core.network.api.ApiGenericCarrier;
 import com.core.network.api.ApiTask;
 import com.core.network.callback.AgentCallback;
 import com.core.network.callback.ApiCallback;
@@ -45,7 +46,15 @@ public class ParseResponseImpl implements ParseResponse {
         T data = null;
         ApiCallback<T> apiCallback = apiTask.getCallback();
         if (apiCallback != null) {
-            Type typeOf = Generics.getGenericType(apiCallback.getClass());
+            Type typeOf = Generics.getGenericType(apiCallback.getClass(), ApiCallback.class);
+            if (typeOf == null) { // 通过接口 ApiGenericType 获取泛型携带者
+                if (apiCallback instanceof ApiGenericCarrier) {
+                    ApiGenericCarrier carrier = ((ApiGenericCarrier) apiCallback);
+                    if (carrier != null) {
+                        typeOf = Generics.getGenericType(carrier.getGenericRealize(), carrier.getGenericDefine());
+                    }
+                }
+            }
 
             if (typeOf == null) {
                 data = null; // 泛型未声明或者不合法

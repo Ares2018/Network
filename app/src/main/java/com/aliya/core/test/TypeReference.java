@@ -28,7 +28,7 @@ public class TypeReference<T> {
      * parameter in the anonymous class's type hierarchy so we can reconstitute it
      * at runtime despite erasure.
      */
-    protected TypeReference() {
+    public TypeReference() {
         Type superClass = getClass().getGenericSuperclass();
 
         Type type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
@@ -40,7 +40,6 @@ public class TypeReference<T> {
         }
 
         this.type = cachedType;
-        Log.e("TAG", "TypeReference");
     }
 
     /**
