@@ -6,7 +6,7 @@
 
 ```
 dependencies {
-    implementation 'com.core:network:0.0.1'
+    implementation 'com.core:network:0.0.5'
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
 }
@@ -79,7 +79,16 @@ public class ParseResponseImpl implements ParseResponse {
         T data = null;
         ApiCallback<T> apiCallback = apiTask.getCallback();
         if (apiCallback != null) {
-            Type typeOf = GenericUtils.getGenericType(apiCallback.getClass());
+            Type typeOf = Generics.getGenericType(apiCallback.getClass(), ApiCallback.class);
+            if (typeOf == null) { // 通过接口 ApiGenericType 获取泛型携带者
+                if (apiCallback instanceof ApiGenericCarrier) {
+                    ApiGenericCarrier carrier = ((ApiGenericCarrier) apiCallback);
+                    if (carrier != null) {
+                        typeOf = Generics.getGenericType(carrier.getGenericRealize(), carrier.getGenericDefine());
+                    }
+                }
+            }
+
             if (typeOf == null) {
                 data = null; // 泛型未声明或者不合法
                 if (ApiManager.isDebuggable()) {
