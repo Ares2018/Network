@@ -125,15 +125,18 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
                     requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url));
                     break;
                 case POST:
-//              RequestBody requestBody = RequestBody.create(
-//                      MediaType.parse("application/json; charset=utf-8"), jsonString(mParamsMap));
                     requestBuilder.url(url).post(ParamsBuilder.buildPost(mParamsMap));
+                    break;
+                case POST_FORM:
+                    requestBuilder.url(url).post(ParamsBuilder.buildPostForm(mParamsMap));
                     break;
                 case POST_UPLOAD:
                     requestBuilder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
                     break;
             }
+//            if (mApiType == ApiType.GET) { // GET 请求缓存才有效
             ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
+//            }
 
             if (mCallback instanceof ApiProgressCallback) {
                 call = ApiManager.getClient().newBuilder()

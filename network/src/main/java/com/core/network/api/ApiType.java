@@ -8,19 +8,10 @@ package com.core.network.api;
  */
 public enum ApiType {
 
-    GET("GET"),
-    POST("POST"),
-    POST_UPLOAD("POST_UPLOAD"),
-    DOWNLOAD("DOWNLOAD");
-
-    private String type;
-
-    ApiType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
+    GET(),          // GET
+    POST(),         // POST Type json content
+    POST_FORM(),    // POST Type form
+    POST_UPLOAD(),  // POST Type form
+    DOWNLOAD();     // 暂未实现，占位
 
 }

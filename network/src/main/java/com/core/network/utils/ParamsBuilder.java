@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.core.network.ApiManager;
 import com.core.network.cache.CachePolicy;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -25,6 +27,8 @@ import okhttp3.RequestBody;
  */
 public final class ParamsBuilder {
 
+    public static final MediaType MEDIA_JSON = MediaType.parse("application/json; charset=utf-8");
+
     /**
      * 构建 GET 请求参数
      *
@@ -32,7 +36,8 @@ public final class ParamsBuilder {
      * @param url       url
      * @return 带参数的url
      */
-    public static @Nullable String buildGet(Map<String, Object> paramsMap, String url) {
+    @Nullable
+    public static String buildGet(Map<String, Object> paramsMap, String url) {
         StringBuilder sb = null;
         if (paramsMap != null && !paramsMap.isEmpty()) {
             sb = new StringBuilder();
@@ -64,7 +69,21 @@ public final class ParamsBuilder {
      * @param paramsMap 参数Map
      * @return RequestBody
      */
-    public static @NonNull RequestBody buildPost(Map<String, Object> paramsMap) {
+    @NonNull
+    public static RequestBody buildPost(Map<String, Object> paramsMap) {
+        return RequestBody.create(
+                MEDIA_JSON,
+                ApiManager.getApiConfig().getJsonParse().onJsonString(paramsMap));
+    }
+
+    /**
+     * 构建 POST Form 请求参数
+     *
+     * @param paramsMap 参数Map
+     * @return RequestBody
+     */
+    @NonNull
+    public static RequestBody buildPostForm(Map<String, Object> paramsMap) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (paramsMap != null && !paramsMap.isEmpty()) {
             for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
@@ -85,8 +104,9 @@ public final class ParamsBuilder {
      * @param filesMap  文件Map
      * @return RequestBody
      */
-    public static @NonNull RequestBody buildUpload(Map<String, Object> paramsMap,
-                              Map<String, String> filesMap) {
+    @NonNull
+    public static RequestBody buildUpload(Map<String, Object> paramsMap,
+                                          Map<String, String> filesMap) {
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
 

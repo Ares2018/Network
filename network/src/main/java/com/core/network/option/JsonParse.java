@@ -12,4 +12,6 @@ public interface JsonParse {
 
     <T> T onJsonParse(String text, Type typeOf);
 
+    String onJsonString(Object obj);
+
 }

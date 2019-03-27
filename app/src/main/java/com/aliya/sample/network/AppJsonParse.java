@@ -18,4 +18,9 @@ public class AppJsonParse implements JsonParse {
         return JSON.parseObject(text, type);
     }
 
+    @Override
+    public String onJsonString(Object obj) {
+        return JSON.toJSONString(obj);
+    }
+
 }

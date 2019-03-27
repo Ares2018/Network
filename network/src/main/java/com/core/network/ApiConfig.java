@@ -2,6 +2,7 @@ package com.core.network;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.core.network.api.ApiPreFilter;
 import com.core.network.option.ExceptionTransform;
@@ -91,7 +92,18 @@ public class ApiConfig {
             mJsonParse = new JsonParse() {
                 @Override
                 public <T> T onJsonParse(String text, Type type) {
+                    if (ApiManager.isDebuggable()) {
+                        Log.e("TAG", "JsonParse 接口必须被实现 ");
+                    }
                     return null;
+                }
+
+                @Override
+                public String onJsonString(Object obj) {
+                    if (ApiManager.isDebuggable()) {
+                        Log.e("TAG", "JsonParse 接口必须被实现 ");
+                    }
+                    return "{}";
                 }
             };
         } else {
