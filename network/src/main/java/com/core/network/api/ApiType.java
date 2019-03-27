@@ -12,6 +12,6 @@ public enum ApiType {
     POST(),         // POST Type json content
     POST_FORM(),    // POST Type form
     POST_UPLOAD(),  // POST Type form
-    DOWNLOAD();     // 暂未实现，占位
+    DOWNLOAD()      // 暂未实现，占位
 
 }
