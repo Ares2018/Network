@@ -1,15 +1,15 @@
-package com.aliya.core;
+package com.aliya.sample;
 
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.aliya.core.entity.DataApi;
-import com.aliya.core.entity.QREntity;
-import com.aliya.core.entity.ReturnBean;
-import com.aliya.core.task.ApiInitTask;
-import com.aliya.core.task.QRCodeTask;
+import com.aliya.sample.entity.DataApi;
+import com.aliya.sample.entity.QREntity;
+import com.aliya.sample.entity.ReturnBean;
+import com.aliya.sample.task.ApiInitTask;
+import com.aliya.sample.task.QRCodeTask;
 import com.core.network.callback.ApiCallback;
 
 public class MainActivity extends AppCompatActivity {

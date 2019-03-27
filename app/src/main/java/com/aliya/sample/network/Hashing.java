@@ -1,4 +1,4 @@
-package com.aliya.core.network;
+package com.aliya.sample.network;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

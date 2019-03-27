@@ -1,11 +1,11 @@
-package com.aliya.core;
+package com.aliya.sample;
 
 import android.app.Application;
 
-import com.aliya.core.network.AppApiPreFilter;
-import com.aliya.core.network.AppClientLoader;
-import com.aliya.core.network.AppJsonParse;
-import com.aliya.core.network.AppUrlTransform;
+import com.aliya.sample.network.AppApiPreFilter;
+import com.aliya.sample.network.AppClientLoader;
+import com.aliya.sample.network.AppJsonParse;
+import com.aliya.sample.network.AppUrlTransform;
 import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
 

@@ -1,6 +1,4 @@
-package com.aliya.core.test;
-
-import android.util.Log;
+package com.aliya.sample.test;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

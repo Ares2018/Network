@@ -1,4 +1,4 @@
-package com.aliya.core.entity;
+package com.aliya.sample.entity;
 
 /**
  * name entity

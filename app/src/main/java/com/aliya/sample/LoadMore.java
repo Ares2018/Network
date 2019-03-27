@@ -1,6 +1,6 @@
-package com.aliya.core;
+package com.aliya.sample;
 
-import com.aliya.core.entity.QREntity;
+import com.aliya.sample.entity.QREntity;
 import com.core.network.callback.ApiCallback;
 
 import java.io.Serializable;

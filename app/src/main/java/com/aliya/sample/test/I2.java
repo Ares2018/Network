@@ -1,4 +1,4 @@
-package com.aliya.core.test;
+package com.aliya.sample.test;
 
 /**
  * 泛型接口2

@@ -1,7 +1,6 @@
-package com.aliya.core.network;
+package com.aliya.sample.network;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.core.network.api.ApiPreFilter;
 import com.core.network.api.ApiTask;
