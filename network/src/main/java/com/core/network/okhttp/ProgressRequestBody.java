@@ -111,7 +111,9 @@ public class ProgressRequestBody extends RequestBody {
                     }
 
                     if (bytesWritten == contentLength) {
-                        progressListener.onProgress(bytesWritten, contentLength, state);
+                        if (state == ApiState.REQUEST_END){
+                            return;
+                        }
                         state = ApiState.REQUEST_END;
                     } else {
                         state = ApiState.REQUEST_PROCESS;

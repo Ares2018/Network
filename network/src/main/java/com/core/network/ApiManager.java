@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import com.core.network.cache.CacheInterceptor;
+import com.core.network.okhttp.ProgressInterceptor;
 
 import okhttp3.OkHttpClient;
 
@@ -69,6 +70,7 @@ public class ApiManager {
                 if (sHttpClient == null && sApiConfig != null) {
                     sHttpClient = sApiConfig.getLazyClientLoader().newBuilder()
                             .addInterceptor(new CacheInterceptor())
+                            .addInterceptor(new ProgressInterceptor())
                             .build();
                 }
             }

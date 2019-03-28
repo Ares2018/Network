@@ -17,7 +17,7 @@ public enum ApiState {
     RESPONSE_END(Type.RESPONSE, State.FINISH);
 
     /**
-     * 类型 : request或response
+     * 类型 : request / response
      */
     private Type type;
     /**
@@ -45,6 +45,24 @@ public enum ApiState {
 
     public boolean isResponse() {
         return type == Type.RESPONSE;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(isRequest() ? "请求 - " : "响应 - ");
+        switch (state) {
+            case START:
+                sb.append("开始");
+                break;
+            case PROCESS:
+                sb.append("进行中");
+                break;
+            case FINISH:
+                sb.append("结束");
+                break;
+        }
+        return sb.toString();
     }
 
     /**

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.core.network.api.ApiCall;
 import com.core.network.api.ApiLoadingPage;
 import com.core.network.api.ApiPreFilter;
+import com.core.network.api.ApiRequestTag;
 import com.core.network.api.ApiTask;
 import com.core.network.api.ApiType;
 import com.core.network.cache.CachePolicy;
@@ -13,7 +14,6 @@ import com.core.network.callback.AgentCallback;
 import com.core.network.callback.ApiCallback;
 import com.core.network.callback.ApiProCallback;
 import com.core.network.callback.ApiProgressCallback;
-import com.core.network.okhttp.ProgressInterceptor;
 import com.core.network.utils.ParamsBuilder;
 
 import java.io.IOException;
@@ -134,17 +134,18 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
                     requestBuilder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
                     break;
             }
-//            if (mApiType == ApiType.GET) { // GET 请求缓存才有效
-            ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
-//            }
-
-            if (mCallback instanceof ApiProgressCallback) {
-                call = ApiManager.getClient().newBuilder()
-                        .addInterceptor(new ProgressInterceptor((ApiProgressCallback) mCallback))
-                        .build().newCall(requestBuilder.build());
-            } else {
-                call = ApiManager.getClient().newCall(requestBuilder.build());
+            // TODO: 2019/3/28 a_liYa 验证
+            if (mApiType == ApiType.GET) { // GET 请求缓存才有效
+                ParamsBuilder.buildHeader(requestBuilder, mHeaders, mCachePolicy);
             }
+
+            ApiRequestTag requestTag = null;
+            if (mCallback instanceof ApiProgressCallback) {
+                requestBuilder.tag(requestTag = new ApiRequestTag(null, mCallback));
+            }
+            Request request = requestBuilder.build();
+            if (requestTag != null) requestTag.setRequest(request);
+            call = ApiManager.getClient().newCall(request);
         }
 
         if (call != null) {
