@@ -2,10 +2,10 @@ package com.aliya.sample;
 
 import android.app.Application;
 
-import com.aliya.sample.network.AppApiPreFilter;
-import com.aliya.sample.network.AppClientLoader;
-import com.aliya.sample.network.AppJsonParse;
-import com.aliya.sample.network.AppUrlTransform;
+import com.aliya.sample.network.config.AppApiPreFilter;
+import com.aliya.sample.network.config.AppClientLoader;
+import com.aliya.sample.network.config.AppJsonParse;
+import com.aliya.sample.network.config.AppUrlTransform;
 import com.core.network.ApiConfig;
 import com.core.network.ApiManager;
 

@@ -1,7 +1,8 @@
-package com.aliya.sample.network;
+package com.aliya.sample.network.config;
 
 import android.support.annotation.NonNull;
 
+import com.aliya.sample.network.HeadersInterceptor;
 import com.core.network.ApiManager;
 import com.core.network.okhttp.SSLSocketManager;
 import com.core.network.option.LazyClientLoader;

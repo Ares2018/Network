@@ -1,4 +1,4 @@
-package com.aliya.sample.network;
+package com.aliya.sample.network.config;
 
 import com.alibaba.fastjson.JSON;
 import com.core.network.option.JsonParse;
