@@ -1,5 +1,6 @@
 package com.core.network.okhttp;
 
+import com.core.network.api.ApiState;
 import com.core.network.callback.ApiProgressCallback;
 
 import java.io.IOException;
@@ -21,14 +22,14 @@ import okio.Sink;
  * @date 16/8/6 下午3:57.
  */
 public class ProgressRequestBody extends RequestBody {
-    //实际的待包装请求体
+    // 实际的待包装请求体
     private final RequestBody requestBody;
-    //进度回调接口
+    // 进度回调接口
     private final ApiProgressCallback progressListener;
-    //包装完成的BufferedSink
+    // 包装完成的BufferedSink
     private BufferedSink bufferedSink;
     // 进行的状态
-    private int state;
+    private ApiState state;
 
     /**
      * 构造函数，赋值
@@ -71,14 +72,13 @@ public class ProgressRequestBody extends RequestBody {
     @Override
     public void writeTo(BufferedSink sink) throws IOException {
         if (bufferedSink == null) {
-            //包装
+            // 包装
             bufferedSink = Okio.buffer(sink(sink));
         }
-        //写入
+        // 写入
         requestBody.writeTo(bufferedSink);
-        //必须调用flush，否则最后一部分数据可能不会被写入
+        // 必须调用flush，否则最后一部分数据可能不会被写入
         bufferedSink.flush();
-
     }
 
     /**
@@ -89,32 +89,32 @@ public class ProgressRequestBody extends RequestBody {
      */
     private Sink sink(Sink sink) {
         return new ForwardingSink(sink) {
-            //当前写入字节数
+            // 当前写入字节数
             long bytesWritten = 0L;
-            //总字节长度，避免多次调用contentLength()方法
+            // 总字节长度，避免多次调用contentLength()方法
             long contentLength = 0L;
 
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 super.write(source, byteCount); // Tag_Exception : IllegalStateException: closed
                 if (contentLength == 0) {
-                    //获得contentLength的值，后续不再调用
+                    // 获得contentLength的值，后续不再调用
                     contentLength = contentLength();
                 }
-                //增加当前写入的字节数
+                // 增加当前写入的字节数
                 bytesWritten += byteCount;
-                //回调
+                // 回调
                 if (progressListener != null) {
-                    if (state == 0) {
-                        state = ApiProgressCallback.REQUEST_START;
+                    if (state == null) {
+                        state = ApiState.REQUEST_START;
                         progressListener.onProgress(0, contentLength, state);
                     }
 
                     if (bytesWritten == contentLength) {
                         progressListener.onProgress(bytesWritten, contentLength, state);
-                        state = ApiProgressCallback.REQUEST_END;
+                        state = ApiState.REQUEST_END;
                     } else {
-                        state = ApiProgressCallback.REQUEST_PROCESS;
+                        state = ApiState.REQUEST_PROCESS;
                     }
                     progressListener.onProgress(bytesWritten, contentLength, state);
                 }

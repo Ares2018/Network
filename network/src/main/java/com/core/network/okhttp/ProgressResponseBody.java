@@ -1,5 +1,6 @@
 package com.core.network.okhttp;
 
+import com.core.network.api.ApiState;
 import com.core.network.callback.ApiProgressCallback;
 
 import java.io.IOException;
@@ -21,14 +22,14 @@ import okio.Source;
  * @date 16/8/6 下午3:30.
  */
 public class ProgressResponseBody extends ResponseBody {
-    //实际的待包装响应体
+    // 实际的待包装响应体
     private final ResponseBody responseBody;
-    //进度回调接口
+    // 进度回调接口
     private final ApiProgressCallback progressListener;
-    //包装完成的BufferedSource
+    // 包装完成的BufferedSource
     private BufferedSource bufferedSource;
     // 进行的状态
-    private int state;
+    private ApiState state;
 
     /**
      * 构造函数，赋值
@@ -70,7 +71,7 @@ public class ProgressResponseBody extends ResponseBody {
     @Override
     public BufferedSource source() {
         if (bufferedSource == null) {
-            //包装
+            // 包装
             bufferedSource = Okio.buffer(source(responseBody.source()));
         }
         return bufferedSource;
@@ -85,9 +86,9 @@ public class ProgressResponseBody extends ResponseBody {
     private Source source(Source source) {
 
         return new ForwardingSource(source) {
-            //当前读取字节数
+            // 当前读取字节数
             long totalBytesRead = 0L;
-            //总字节长度，避免多次调用contentLength()方法
+            // 总字节长度，避免多次调用contentLength()方法
             long contentLength = 0L;
 
             @Override
@@ -95,26 +96,26 @@ public class ProgressResponseBody extends ResponseBody {
                 long bytesRead = super.read(sink, byteCount);
 
                 if (contentLength == 0) {
-                    //获得contentLength的值，后续不再调用
+                    // 获得contentLength的值，后续不再调用
                     contentLength = contentLength();
                 }
 
-                //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
+                // 增加当前读取的字节数，如果读取完成了bytesRead会返回-1
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                //回调，如果contentLength不知道长度，会返回-1
+                // 回调，如果contentLength不知道长度，会返回-1
                 if (progressListener != null) {
-                    if (state == 0) {
-                        state = ApiProgressCallback.RESPONSE_START;
+                    if (state == null) {
+                        state = ApiState.RESPONSE_START;
                         progressListener.onProgress(0, contentLength, state); // 开始回调
                     }
 
                     if (bytesRead == -1) {
-                        if (state == ApiProgressCallback.RESPONSE_END) {
+                        if (state == ApiState.RESPONSE_END) {
                             return bytesRead;
                         }
-                        state = ApiProgressCallback.RESPONSE_END;
+                        state = ApiState.RESPONSE_END;
                     } else {
-                        state = ApiProgressCallback.RESPONSE_PROCESS;
+                        state = ApiState.RESPONSE_PROCESS;
                     }
                     progressListener.onProgress(totalBytesRead, contentLength, state);
                 }
