@@ -1,7 +1,6 @@
 package com.aliya.sample.task;
 
-import com.core.network.BaseTask;
-import com.core.network.api.ApiType;
+import com.aliya.sample.network.task.ApiPostTask;
 import com.core.network.callback.ApiCallback;
 
 /**
@@ -10,10 +9,10 @@ import com.core.network.callback.ApiCallback;
  * @author a_liYa
  * @date 2018/1/7 18:23.
  */
-public class ApiInitTask extends BaseTask {
+public class ApiInitTask extends ApiPostTask {
 
     public <T> ApiInitTask(ApiCallback<T> callback) {
-        super(callback, ApiType.POST);
+        super(callback);
     }
 
     @Override

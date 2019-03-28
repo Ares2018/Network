@@ -1,7 +1,6 @@
 package com.aliya.sample.task;
 
-import com.core.network.BaseTask;
-import com.core.network.api.ApiType;
+import com.aliya.sample.network.task.ApiGetTask;
 import com.core.network.callback.ApiCallback;
 
 /**
@@ -10,10 +9,10 @@ import com.core.network.callback.ApiCallback;
  * @author a_liYa
  * @date 2017/12/28 12:43.
  */
-public class QRCodeTask extends BaseTask {
+public class QRCodeTask extends ApiGetTask {
 
     public <T> QRCodeTask(ApiCallback<T> callback) {
-        super(callback, ApiType.GET);
+        super(callback);
     }
 
     @Override

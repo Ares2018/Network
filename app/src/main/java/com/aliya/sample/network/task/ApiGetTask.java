@@ -1,4 +1,4 @@
-package com.aliya.sample.network.base;
+package com.aliya.sample.network.task;
 
 import com.core.network.BaseTask;
 import com.core.network.api.ApiType;
