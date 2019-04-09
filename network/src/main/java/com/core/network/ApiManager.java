@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.View;
 
 import com.core.network.cache.CacheInterceptor;
 import com.core.network.okhttp.ProgressInterceptor;
@@ -26,6 +27,7 @@ public class ApiManager {
     private static boolean sDebuggable;
     private static ApiConfig sApiConfig;
     private static OkHttpClient sHttpClient;
+    private static ViewOnAttachStateChangeListener sOnAttachStateChangeListener;
 
     public static final String LOG_TAG = "API_LOG";
 
@@ -89,6 +91,16 @@ public class ApiManager {
         return sApiConfig;
     }
 
+    static void registerApiCallByView(View v) {
+        if (v != null) {
+            if (sOnAttachStateChangeListener == null) {
+                sOnAttachStateChangeListener = new ViewOnAttachStateChangeListener();
+            }
+            v.removeOnAttachStateChangeListener(sOnAttachStateChangeListener);
+            v.addOnAttachStateChangeListener(sOnAttachStateChangeListener);
+        }
+    }
+
     /**
      * 网络是否可用
      *
@@ -109,7 +121,7 @@ public class ApiManager {
         return sDebuggable;
     }
 
-    static class LifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+    private static class LifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -139,7 +151,19 @@ public class ApiManager {
         public void onActivityDestroyed(Activity activity) {
             ApiCallManager.get().cancel(activity);
         }
+    }
 
+    private static class ViewOnAttachStateChangeListener implements View.OnAttachStateChangeListener {
+
+        @Override
+        public void onViewAttachedToWindow(View v) {
+
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(View v) {
+            ApiCallManager.get().cancel(v);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.core.network;
 
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.core.network.api.ApiCall;
 import com.core.network.api.ApiLoadingPage;
@@ -156,6 +157,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         }
         if (call != null) {
             mTaskCall.setCall(call);
+            if (mTag instanceof View) {
+                ApiManager.registerApiCallByView((View) mTag);
+            }
             ApiCallManager.get().addCall(mTag, mTaskCall);
         }
 
