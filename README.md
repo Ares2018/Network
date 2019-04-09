@@ -6,7 +6,7 @@
 
 ```
 dependencies {
-    implementation 'com.core:network:0.0.5'
+    implementation 'com.core:network:0.0.7'
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
 }
