@@ -152,17 +152,13 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (call != null) {
             call.enqueue(this);
         }
-        if (mTaskCall == null) {
-            mTaskCall = new ApiCall(call);
-        }
-        if (call != null) {
-            mTaskCall.setCall(call);
-            if (mTag instanceof View) {
-                ApiManager.registerApiCallByView((View) mTag);
-            }
-            ApiCallManager.get().addCall(mTag, mTaskCall);
-        }
+        if (mTaskCall == null) mTaskCall = new ApiCall(call);
+        else mTaskCall.setCall(call);
 
+        if (mTag instanceof View) {
+            ApiManager.registerApiCallByView((View) mTag);
+        }
+        ApiCallManager.get().addCall(mTag, mTaskCall);
         return mTaskCall;
     }
 

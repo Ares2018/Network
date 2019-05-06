@@ -23,6 +23,7 @@ public class ApiCall {
 
     public void setCall(Call call) {
         this.mCall = call;
+        if (isCanceled && mCall != null) mCall.cancel();
     }
 
     public void cancel() {
