@@ -11,21 +11,23 @@ import okhttp3.Call;
 public class ApiCall {
 
     private Call mCall;
+    private boolean isCanceled;
 
-    public ApiCall(Call mCall) {
-        this.mCall = mCall;
+    public ApiCall(Call call) {
+        this.mCall = call;
     }
 
     public Call getCall() {
         return mCall;
     }
 
-    public void setCall(Call mCall) {
-        this.mCall = mCall;
+    public void setCall(Call call) {
+        this.mCall = call;
     }
 
     public void cancel() {
         if (mCall != null) mCall.cancel();
+        isCanceled = true;
     }
 
     public boolean isExecuted() {
@@ -33,7 +35,7 @@ public class ApiCall {
     }
 
     public boolean isCanceled() {
-        return mCall == null || mCall.isCanceled();
+        return isCanceled || (mCall != null && mCall.isCanceled());
     }
 
 }
