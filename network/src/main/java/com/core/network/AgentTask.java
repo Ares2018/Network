@@ -242,6 +242,9 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             mCallback.onCancel();
             if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
         }
+        // 置空，防止重复回调
+        mCallback = null;
+        mLoadingPage = null;
     }
 
     // 回调错误 - 主进程
@@ -312,4 +315,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         return false;
     }
 
+    public boolean isCanceled() {
+        return mTaskCall != null && mTaskCall.isCanceled();
+    }
 }

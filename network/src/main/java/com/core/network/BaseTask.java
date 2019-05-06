@@ -25,8 +25,8 @@ public abstract class BaseTask implements ApiTask {
         mAgentTask = new AgentTask(this, callback, type);
     }
 
-    @Override
     @Nullable
+    @Override
     public ApiCall exe(Object... params) {
         this.mParams = params;
         onPreExecute();
@@ -50,8 +50,13 @@ public abstract class BaseTask implements ApiTask {
         return false;
     }
 
+    @Nullable
     @Override
     public ApiCall retryExe() {
+        if (mAgentTask.isCanceled()) {
+            mAgentTask.onCancel();
+            return null;
+        }
         return exe(mParams);
     }
 
@@ -117,5 +122,4 @@ public abstract class BaseTask implements ApiTask {
 
     protected void onPreExecute() {
     }
-
 }

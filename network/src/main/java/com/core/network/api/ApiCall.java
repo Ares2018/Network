@@ -37,5 +37,4 @@ public class ApiCall {
     public boolean isCanceled() {
         return isCanceled || (mCall != null && mCall.isCanceled());
     }
-
 }
