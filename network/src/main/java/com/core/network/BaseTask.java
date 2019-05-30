@@ -52,8 +52,9 @@ public abstract class BaseTask implements ApiTask {
 
     @Nullable
     @Override
-    public ApiCall retryExe() {
-        if (mAgentTask.isCanceled()) {
+    public ApiCall retryExe(boolean force) {
+        // 若没有强制重试，要考虑isCanceled()
+        if (!force && mAgentTask.isCanceled()) {
             mAgentTask.onCancel();
             return null;
         }

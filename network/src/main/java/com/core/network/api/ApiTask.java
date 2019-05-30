@@ -13,7 +13,7 @@ public interface ApiTask {
 
     ApiCall exe(Object... params);
 
-    ApiCall retryExe();
+    ApiCall retryExe(boolean force);
 
     void onSetupParams(Object... params);
 
