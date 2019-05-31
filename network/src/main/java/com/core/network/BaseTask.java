@@ -58,6 +58,8 @@ public abstract class BaseTask implements ApiTask {
             mAgentTask.onCancel();
             return null;
         }
+        if (force) mAgentTask.hadCallback = false;
+
         return exe(mParams);
     }
 

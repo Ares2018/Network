@@ -51,6 +51,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     private ApiTask mApiTask;
     private ApiCall mTaskCall;
     private ApiLoadingPage mLoadingPage;
+    boolean hadCallback; // true,已执行过callback
 
     private CachePolicy mCachePolicy;
     private long mStartMs;      // 开始的时间 单位：毫秒
@@ -152,9 +153,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
         if (call != null) {
             call.enqueue(this);
         }
-        if (mTaskCall == null) mTaskCall = new ApiCall(call);
-        else mTaskCall.setCall(call);
-
+        mTaskCall = new ApiCall(call);
         if (mTag instanceof View) {
             ApiManager.registerApiCallByView((View) mTag);
         }
@@ -183,6 +182,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理成功
     @Override
     public void onSuccess(final T result) {
+        if (hadCallback) return;
+        hadCallback = true;
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         } else {
@@ -199,6 +200,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理取消
     @Override
     public void onCancel() {
+        if (hadCallback) return;
+        hadCallback = true;
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         } else {
@@ -214,6 +217,8 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
     // 处理失败
     @Override
     public void onError(final int errCode, final String msg) {
+        if (hadCallback) return;
+        hadCallback = true;
         if (mCallback == null && mLoadingPage == null) {
             ApiCallManager.get().removeCall(mTag, mTaskCall); // 移除APICall
         } else {
@@ -238,9 +243,6 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             mCallback.onCancel();
             if (mCallback instanceof ApiProCallback) ((ApiProCallback) mCallback).onAfter();
         }
-        // 置空，防止重复回调
-        mCallback = null;
-        mLoadingPage = null;
     }
 
     // 回调错误 - 主进程

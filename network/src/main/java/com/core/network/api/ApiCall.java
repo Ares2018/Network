@@ -21,10 +21,10 @@ public class ApiCall {
         return mCall;
     }
 
-    public void setCall(Call call) {
-        this.mCall = call;
-        if (isCanceled && mCall != null) mCall.cancel();
-    }
+//    public void setCall(Call call) {
+//        this.mCall = call;
+//        if (isCanceled && mCall != null) mCall.cancel();
+//    }
 
     public void cancel() {
         if (mCall != null) mCall.cancel();
