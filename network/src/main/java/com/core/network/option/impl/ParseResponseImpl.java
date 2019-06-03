@@ -43,6 +43,10 @@ public class ParseResponseImpl implements ParseResponse {
         String body = response.body().string();
 
         T data = null;
+        if(body.equals("")){
+            callback.onSuccess(data);
+            return;
+        }
         ApiCallback<T> apiCallback = apiTask.getCallback();
         if (apiCallback != null) {
             Type typeOf = GenericUtils.getGenericType(apiCallback.getClass());
