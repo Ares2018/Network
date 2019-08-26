@@ -9,6 +9,7 @@ import com.core.network.cache.CachePolicy;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
@@ -130,11 +131,11 @@ public final class ParamsBuilder {
                 if (!TextUtils.isEmpty(value)) {
                     File file = new File(value);
                     if (file.exists()) {
+                        final String fileName = file.getName();
                         multipartBodyBuilder.addFormDataPart(
                                 entry.getKey(),
-                                file.getName(),
-                                RequestBody.create(null, file));
-                        // MediaType.parse("image/jpeg")
+                                fileName,
+                                RequestBody.create(createMediaType(fileName), file));
                     }
                 }
             }
@@ -177,4 +178,7 @@ public final class ParamsBuilder {
         }
     }
 
+    private static MediaType createMediaType(String filename) {
+        return MediaType.parse(URLConnection.getFileNameMap().getContentTypeFor(filename));
+    }
 }
