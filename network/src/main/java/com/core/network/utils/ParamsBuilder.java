@@ -8,11 +8,13 @@ import com.core.network.cache.CachePolicy;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -110,11 +112,12 @@ public final class ParamsBuilder {
                 if (!TextUtils.isEmpty(value)) {
                     File file = new File(value);
                     if (file.exists()) {
+                        final String fileName = file.getName();
+                        MediaType mediaType = createMediaType(fileName);
                         multipartBodyBuilder.addFormDataPart(
                                 entry.getKey(),
-                                file.getName(),
-                                RequestBody.create(null, file));
-                        // MediaType.parse("image/jpeg")
+                                fileName,
+                                RequestBody.create(mediaType, file));
                     }
                 }
             }
@@ -155,6 +158,10 @@ public final class ParamsBuilder {
                 request.header(CachePolicy.maxAgeKey(), String.valueOf(cachePolicy.cacheMaxAge));
             }
         }
+    }
+
+    private static MediaType createMediaType(String filename) {
+        return MediaType.parse(URLConnection.getFileNameMap().getContentTypeFor(filename));
     }
 
 }
