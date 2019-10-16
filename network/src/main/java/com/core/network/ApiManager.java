@@ -125,6 +125,7 @@ public class ApiManager {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            FragmentLifecycle.register(activity);
         }
 
         @Override
