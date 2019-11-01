@@ -21,8 +21,16 @@ public abstract class BaseTask implements ApiTask {
     private Object[] mParams;
     private AgentTask mAgentTask;
 
+    private char[] except;
+
     public <T> BaseTask(ApiCallback<T> callback, ApiType type) {
         mAgentTask = new AgentTask(this, callback, type);
+    }
+
+    @Override
+    public ApiTask setURLEncodeExcept(char[] chars) {
+        this.except = chars;
+        return this;
     }
 
     @Override
@@ -35,6 +43,7 @@ public abstract class BaseTask implements ApiTask {
         if (onInterruptExe(params)) {
             return null;
         }
+        mAgentTask.setURLEncodeExcept(except);
 
         return mAgentTask.doTask();
     }

@@ -34,7 +34,7 @@ public final class ParamsBuilder {
      * @param url       url
      * @return 带参数的url
      */
-    public static @Nullable String buildGet(Map<String, Object> paramsMap, String url) {
+    public static @Nullable String buildGet(Map<String, Object> paramsMap, String url, char[] except) {
         StringBuilder sb = null;
         if (paramsMap != null && !paramsMap.isEmpty()) {
             sb = new StringBuilder();
@@ -45,8 +45,10 @@ public final class ParamsBuilder {
 
                 Object value = entry.getValue();
                 try {
+//                    sb.append((value == null || TextUtils.isEmpty(value.toString())) ? "" :
+//                            URLEncoder.encode(value.toString(), "utf-8"));
                     sb.append((value == null || TextUtils.isEmpty(value.toString())) ? "" :
-                            URLEncoder.encode(value.toString(), "utf-8"));
+                            LocalURLEncoder.encode(value.toString(), "utf-8", except));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

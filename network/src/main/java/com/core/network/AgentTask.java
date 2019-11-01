@@ -38,6 +38,7 @@ import static com.core.network.utils.HandlerUtils.runInMainThread;
  */
 class AgentTask<T> implements Callback, AgentCallback<T> {
 
+    private char[] except;
     private ApiCallback<T> mCallback;
 
     private Map<String, Object> mParamsMap;     // 普通参数Map
@@ -122,7 +123,7 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
 
             switch (mApiType) {
                 case GET:
-                    requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url));
+                    requestBuilder.url(ParamsBuilder.buildGet(mParamsMap, url, except));
                     break;
                 case POST:
 //              RequestBody requestBody = RequestBody.create(
@@ -302,6 +303,10 @@ class AgentTask<T> implements Callback, AgentCallback<T> {
             return true;
         }
         return false;
+    }
+
+    public void setURLEncodeExcept(char[] chars) {
+        this.except = chars;
     }
 
 }

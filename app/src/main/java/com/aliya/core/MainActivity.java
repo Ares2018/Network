@@ -16,7 +16,9 @@ import com.aliya.core.task.MobileTest;
 import com.aliya.core.task.MobileTestTask;
 import com.aliya.core.task.QRCodeTask;
 import com.core.network.callback.ApiCallback;
+import com.core.network.utils.LocalURLEncoder;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        testURLEncode();
 //
 //        long millis = SystemClock.uptimeMillis();
 //
@@ -84,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }).exe();
 
-
+        char[] except = new char[2];
+        except[0] = ',';
+        except[1] = '@';
         new MobileTestTask(new ApiCallback<List<MetaCategoryEntity>>() {
             @Override
             public void onCancel() {
@@ -100,7 +105,21 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(List<MetaCategoryEntity> data) {
                 Log.e("TGA", data.toString());
             }
-        }).exe();
+        }).setURLEncodeExcept(except).exe();
+    }
+
+    private void testURLEncode() {
+        char[] except = new char[2];
+        except[0] = ',';
+        except[1] = '@';
+        String text = "zhangsan@8531.cnlocation31,21";
+        try {
+            String textEncode = LocalURLEncoder.encode(text, "utf-8", except);
+            Log.e("text===", text);
+            Log.e("textEncode===", textEncode);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 }

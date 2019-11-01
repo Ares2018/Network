@@ -33,4 +33,11 @@ public interface ApiTask {
 
     ApiTask setLoadingPage(ApiLoadingPage loadingPage);
 
+    /**
+     * 添加不需要编码字符
+     * @param chars
+     * @return
+     */
+    ApiTask setURLEncodeExcept(char[] chars);
+
 }
